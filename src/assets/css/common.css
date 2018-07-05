@@ -1,0 +1,79 @@
+.my-el-pagination{
+    text-align: right;
+}
+
+.my-padding-10{
+    padding: 10px 10px 10px 10px;
+}
+
+.my-margin-top-10{
+    margin-top: 10px;
+}
+
+.my-margin-top-20{
+    margin-top: 20px;
+}
+
+.el-main{
+    height: 100%;
+}
+.el-header, .el-aside, .el-main, .el-footer {
+    padding: 0;
+    margin: 0;
+}
+
+.el-main{
+    flex-basis: 0;
+}
+
+.el-container{
+    height: 100%;
+}
+.el-footer{
+    color:#5A5E66;
+    text-align: center;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    height: 100%; 
+}
+
+
+.el-menu {
+    border-right: 0px solid #e6e6e6;
+}
+
+.el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+}
+
+html,body{
+    height:100%;
+}
+body{
+    margin:0;
+    padding: 0;
+}
+#app{
+  height: 100%;
+}
+
+/**取消table中插入文字图标使表格高度撑高*/
+/* .el-table .cell {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 20px;
+} */
+
+/**取消table中插入文字按钮使表格高度撑高*/
+/* td .el-button{
+    padding-top: 0px;
+    padding-bottom: 0px;
+} */
+
+/* td .el-tag--small{
+    height: 23px;
+} */

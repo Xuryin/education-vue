@@ -1,0 +1,195 @@
+@import "~static/less/reset.less";
+.b {
+    border: 1px solid red;
+}
+
+.page_header {
+    width: 100%;
+    display: flex;
+    height: @h;
+    justify-content: center;
+    background: linear-gradient(to left, rgb(28, 118, 242), rgb(27, 194, 251));
+}
+
+.left_sec {
+    min-width: 40%;
+    width: 40%;
+    height: @h;
+    span {
+        color: @fff;
+        display: inline-block;
+        box-sizing: border-box;
+    }
+    span:nth-child(1) {
+        padding: 1.75rem 0.75rem 0 0.75rem;
+        font-size: @44;
+        font-family: txjlzcyj;
+    }
+    span:nth-child(2) {
+        padding: 3rem 0 0 0;
+        font-size: @22;
+    }
+}
+
+.right_sec {
+    min-width: 35%;
+    width: 35%;
+    height: 100%;
+    display: flex;
+    >div:nth-child(1) {
+        width: 78%;
+        display: flex;
+        justify-content: flex-end;
+        padding: 1.375rem 0;
+        position: relative;
+        >img:nth-child(1) {
+            text-align: right;
+            width: 3.2rem;
+            height: 3.2rem;
+        }
+        >img:nth-child(3) {
+            width: 2.25rem;
+            height: 3.125rem;
+            padding: 1.125rem 1rem 1.125rem 0;
+        }
+        >span {
+            font-size: @22;
+            color: @fff;
+            line-height: 3.125rem;
+            padding: 0 10px;
+        }
+        &:after {
+            content: '';
+            width: 1px;
+            height: 44%;
+            position: absolute;
+            top: 28%;
+            border-right: 1px solid @fff;
+            opacity: 0.6;
+        }
+    }
+    >div:nth-child(2) {
+        width: 22%;
+        display: flex;
+        justify-content: flex-end;
+        >img {
+            height: @h;
+            padding: 2.125rem 0.5rem 2.125rem 0;
+            width: 31px;
+        }
+        >span {
+            font-size: @22;
+            color: @fff;
+            line-height: @h;
+            padding-right: 0.625rem;
+        }
+    }
+}
+
+.dialog {
+    width: 370px;
+    height: 270px;
+    background-color: @fff;
+    padding: 15px 27px 0 29px;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 1px 1px 5px @ccc;
+    position: absolute;
+    z-index: 1000;
+    right: 0;
+    top: @h;
+    >div:nth-child(1) {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        img {
+            width: 88px;
+            height: 88px;
+        }
+        ul{
+            margin-left: 30px;
+            padding-top: 15px;
+        }
+        li:nth-child(1) {
+            font-size: @26;
+            color: @333;
+        }
+        li:nth-child(2) {
+            font-size: @20;
+            color: @orange;
+            padding-top: 10px;
+        }
+    }
+    p {
+        font-size: @20;
+        color: @000;
+        line-height: 48px;
+        overflow: hidden;
+        text-overflow:ellipsis;
+        white-space: nowrap;
+    }
+    .dialog_school {
+        margin-top: 5px;
+        box-sizing: border-box;
+        height: 41px;
+        padding-left: 20px;
+        background-color: #e5ebef;
+        display: flex;
+        img {
+            height: 100%;
+            width: 28px;
+            padding: 10px 0;
+        }
+        span {
+            padding-left: 12px;
+            height: 100%;
+            display: block;
+            line-height: 41px;
+            box-sizing: border-box;
+            color: @333;
+            font-size: @22;
+        }
+    }
+    .dialog_class {
+        margin-top: 5px;
+        height: 41px;
+        display: flex;
+        justify-content: space-between;
+        li {
+            background-color: #e5ebef;
+            padding-left: 20px;
+            display: flex;
+        }
+        li:nth-child(1) {
+            width: 180px;
+            .include;
+        }
+        li:nth-child(2) {
+            width: 125px;
+            .include;
+        }
+        .include {
+            img {
+                height: 100%;
+                width: 28px;
+                padding: 8px 3px;
+            }
+            span {
+                padding-left: 1rem;
+                height: 100%;
+                display: block;
+                line-height: 41px;
+                box-sizing: border-box;
+                color: @333;
+                font-size: @22;
+            }
+        }
+    }
+}
+
+.dialogShow {
+    animation: showDialog 0.5s linear;
+}
+
+.dialogHide {
+    animation: hideDialog 0.5s linear;
+}

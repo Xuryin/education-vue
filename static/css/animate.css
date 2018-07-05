@@ -1,0 +1,18 @@
+@keyframes showDialog {
+    from {
+        top: -96px;
+    }
+    to {
+        top: 96px;
+    }
+}
+
+@keyframes hoverPicture {
+    0% {
+        transform: scale(1, 1);
+    }
+    100% {
+        transform: scale(1.2, 1.2);
+    }
+}
+

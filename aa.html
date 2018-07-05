@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        html {
+            padding-left: 20px;
+        }
+        .dialog {
+            height: 200px;
+            width: 600px;
+            border-radius: 10px;
+            background: #1d71f2;
+            display: flex;
+            justify-content: center;
+        }
+        .dialog_content {
+            width: 100%;
+            height: 97%;
+            border-radius: 10px;
+            border: 1px solid #00c1ff;
+            box-shadow: 1px 1px 10px 2px  #00c1ff inset;
+            /*background-image: linear-gradient(to bottom, #1d71f2 97%, rgba(255, 255, 255, 0.3) 100%);*/
+        }
+
+        /*以下是第一个框*/
+        .finishedDialog {
+            width: 39.875rem;
+            margin: 0 auto;
+            height: 21.25rem;
+            position: absolute;
+            bottom: 30%;
+            left: 10%;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 3.45rem 5rem 0 5rem;
+            box-sizing: border-box;
+        }
+
+        .finishedDialog_title {
+            border:1px solid red;
+        }
+
+        .finishedDialog_title span {
+            font-size: 2rem;
+            color: #363636;
+            position: relative;
+            top: -1rem;
+        }
+
+        .finishedDialog_grade {
+            margin: 2rem auto;
+            display: flex;
+            justify-content: center;
+            border:1px solid red;
+        }
+
+        .finishedDialog_grade img {
+            width: 2.5rem;
+        }
+
+        .finishedDialog_grade span {
+            font-size: 2.5rem;
+            color: #FF7E00;
+        }
+
+        .bottom_button {
+            display: flex;
+            justify-content: space-between;
+            padding: 0;
+        }
+
+        .bottom_button li {
+            text-align: center;
+            width: 50%;
+            list-style: none;
+            border: 1px solid red;
+        }
+
+        .bottom_button li button {
+            width: 80%;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .bottom_button li:nth-child(1) button{
+            background-color: #eee;
+            color: #333333;
+            font-size: 2rem;
+        }
+
+        .bottom_button li:nth-child(2) button{
+            background-color: #3B8F02;
+            color: #fff;
+            font-size: 2rem;
+        }
+
+        /*以下是第二个框*/
+
+        .finishedDialog_2 {
+            width: 39.875rem;
+            margin: 0 auto;
+            height: 21.25rem;
+            position: absolute;
+            bottom: 30%;
+            left: 10%;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 3.45rem 5rem 0 5rem;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .finishedDialog_2 img {
+
+        }
+
+        .finishedDialog_2 p {
+            font-size: 1.5rem;
+        }
+
+        .finishedDialog_2 button {
+            width: 10rem;
+            height: 3rem;
+            border: none;
+            background-color: #F3A818;
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 2rem;
+            margin-top: 2rem;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="dialog">
+        <div class="dialog_content"></div>
+    </div>
+
+    <!--第一狂-->
+
+    <!--  <div class="finishedDialog">
+         <div class="finishedDialog_title">
+             <img src="./static/imgs/pic_right.png" alt="">
+             &lt;!&ndash;<img src="~static/imgs/pic_error.png" alt="">&ndash;&gt;
+             <span>恭喜你完成了该主题的学习</span>
+         </div>
+         <div class="finishedDialog_grade">
+             <img src="./static/imgs/pic_good.png" alt="">
+             <span>+{{grade}}</span>
+         </div>
+
+         <ul class="bottom_button">
+             <li>
+                 <button>返回</button>
+
+             </li>
+             <li> <button>下一步</button></li>
+         </ul>
+     </div>-->
+
+    <!--第二矿-->
+    <div class="finishedDialog_2">
+        <img src="./static/imgs/pic_good.png" alt="">
+        <p>恭喜你完成了本年级所有课程的学习！</p>
+        <button>返回</button>
+    </div>
+
+</body>
+</html>
