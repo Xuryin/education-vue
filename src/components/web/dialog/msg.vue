@@ -1,8 +1,8 @@
 <template>
     <div class="thisPage" v-if="dialogVisible">
         <div class="shadow"></div>
-        <div class="content_border">
-            <div class="content" v-if="gradeNum > 3">
+        <div class="content_border" v-if="!isPinyin">
+            <div class="content" >
                 <span class="content-title">问题：{{questionData.content}}</span>
                 <div class="content-radio">
                     <ul class="select_text">
@@ -12,7 +12,10 @@
                     </ul>
                 </div>
             </div>
-            <div v-if="gradeNum <= 3" class="content">
+
+        </div>
+        <div class="content_border" v-if="isPinyin">
+            <div class="content" >
             <span class="content-title-pinyin">
                     <span v-for="(value, key) in questionData.contentPinyin" :key="key">
                         <ruby>
@@ -26,7 +29,7 @@
                         <li v-for="(value, key) in questionData.answers" @click="changeAnswer(value)">
                             <span>{{value.answerOption}}.</span>
                             <span v-for="(value, key) in value.answerContentPinyin" :key="key">
-                            <ruby><rb>{{value.w}}</rb><rt>{{value.p}}</rt> </ruby>
+                            <ruby class="pinyin_border"><rb>{{value.w}}</rb><rt>{{value.p}}</rt> </ruby>
                         </span>
                         </li>
                     </ul>
@@ -47,7 +50,8 @@
             return {
                 dialogVisible: false,
                 questionData: {},
-                gradeNum: 0
+                gradeNum: 0,
+                isPinyin: true
             }
         },
         methods: {
@@ -60,12 +64,10 @@
         mounted() {
             let _this = this
             bus.$on('openDialog', function (obj) {
-                _this.dialogVisible = false
+                _this.dialogVisible = true
                 _this.gradeNum = obj.videoGrade
                 _this.questionData = obj.question
-                setTimeout(function () {
-                    _this.dialogVisible = true
-                }, 500)
+                _this.gradeNum < 4 ? _this.isPinyin = true : _this.isPinyin = false
             })
         },
         beforeDestroy() {
@@ -164,7 +166,8 @@
             padding: 0 0.2rem;
         }
         rt {
-            min-height: 1.2rem;
+            max-height: 1.2rem;
+            height: 1.2rem;
         }
     }
 
@@ -174,13 +177,25 @@
 
     .select_text_pinyin li {
         color: #333333;
-        padding: 1.8rem 2rem 0.8rem 2rem;
+        padding: 1.6rem 2rem 0.6rem 2rem;
         line-height: 2.5rem;
         font-size: 1.2rem;
         text-align: left;
         span {
             padding: 0 0.2rem;
             letter-spacing: 0.1rem;
+            line-height: 1.8rem;
+        }
+
+        ruby {
+        }
+
+        rt {
+            height: 1.2rem;
+            padding-top: 0.2rem;
+        }
+        .pinyin_border {
+
         }
     }
 

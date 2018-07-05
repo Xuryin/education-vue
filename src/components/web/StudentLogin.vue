@@ -1,7 +1,7 @@
 <template>
     <div class="this_page">
         <video id="vid" crossorigin="*" src="~static/loginVideo.mp4" autoplay
-               width="100%" height="100%" class="login_video" v-show="!showLogin">
+               :width="videoWidth" height="100%" class="login_video" v-show="!showLogin">
         </video>
         <div class="login_page" @keyup.enter="login" v-show="showLogin">
             <div class="login_title">
@@ -31,7 +31,8 @@
                 no: '',
                 password: '',
                 video: document.getElementById('vid'),
-                showLogin: false
+                showLogin: false,
+                videoWidth: ''
             }
         },
         methods: {
@@ -64,8 +65,10 @@
                 _this.$nextTick(function () {
                     document.getElementById('loginButton').focus()
                 })
-
             }
+        },
+        created () {
+            this.videoWidth = document.body.clientWidth
         }
     }
 </script>
@@ -107,6 +110,11 @@
         background-color: rgb(32, 123, 232);
         color: #ffffff;
         font-size: 1.5rem;
+    }
+
+    #vid{
+        object-fit: cover;
+        object-position: center center;
     }
 
     .this_page {
