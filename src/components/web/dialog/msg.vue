@@ -84,8 +84,11 @@
     }
 
     .shadow {
-        height: 100%;
-        opacity: 0.4;
+        height: calc(98% - 10rem);
+        margin-top: 10rem;
+        margin-left: 18%;
+        width: 64%;
+        opacity: 0.2;
         background-color: #333333;
         position: absolute;
         top: 0;
@@ -94,20 +97,15 @@
 
     .content-title {
         font-size: 1.5rem;
-        line-height: 2rem;
-        padding: 1.5rem 2rem;
+        line-height: 2.5rem;
+        padding: 1.2rem 2rem;
         color: #ffffff;
         border-radius: 10px 10px 0 0;
         background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
         display: flex;
         flex-wrap: wrap;
         letter-spacing: 0.15rem;
-        white-space: nowrap;
         word-wrap: break-word;
-        span {
-            padding: 0 0.2rem;
-
-        }
     }
 
     .content-title_question {
@@ -129,7 +127,6 @@
         max-width: 40rem;
         min-width: 20rem;
         background-color: @fff;
-
     }
 
     .select_text {
@@ -138,8 +135,9 @@
 
     .select_text li {
         color: #333333;
-        padding: 1.5rem 2rem;
+        padding: 1.2rem 2rem;
         font-size: 1.2rem;
+        line-height: 2rem;
         text-align: left;
         span {
             padding: 0 0.2rem;
@@ -153,7 +151,7 @@
 
     .content-title-pinyin {
         font-size: 1.5rem;
-        padding: 1.4rem 2rem 0.8rem 2rem;
+        padding: 1.4rem 2rem 1.2rem 2rem;
         color: #ffffff;
         border-radius: 10px 10px 0 0;
         background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
@@ -163,6 +161,7 @@
         white-space: nowrap;
         word-wrap: break-word;
         span {
+            display: inline-block;
             padding: 0 0.2rem;
         }
         rt {

@@ -2,7 +2,7 @@
     <div class="videoPage">
         <div class="video_content_title">
             <img src="~static/imgs/btn_back.png" alt="返回" @click="$router.push({name: 'courseDetails'})">
-            <span>{{orderNum}}：{{videoTitle}}</span>
+            <span v-show="showTitle">{{orderNum}}：{{videoTitle}}</span>
         </div>
         <div class="video_content">
             <video controls id="vid" crossorigin="*" :src="sourceSrc" autoplay
@@ -32,7 +32,7 @@
         inject: ['reload'],
         data() {
             return {
-                studentName:'大宝',
+                studentName: '大宝',
                 sourceSrc: '',
                 questions: [],
                 dialog: [
@@ -45,16 +45,16 @@
                             '小星目瞪口呆，（主角）则十分愤怒。',
                             '（主角）气愤地指责小星说：“你这人怎么这样啊，我好心提醒你，你却把我的文具盒摔坏了，真是好心没好报，我再也不跟你玩了！”'
                         ],
-                        showed:0
+                        showed: 0
                     },
                     {
                         id: 2,
                         showTime: 102.8,
                         content: [
-                             '（主角）在教室门口遇到了广广。',
-                             '（主角）：“广广，你帮我去跟小星说，汪老师找他去办公室。”'
+                            '（主角）在教室门口遇到了广广。',
+                            '（主角）：“广广，你帮我去跟小星说，汪老师找他去办公室。”'
                         ],
-                        showed:0
+                        showed: 0
                     },
                     {
                         id: 3,
@@ -62,31 +62,15 @@
                         content: [
                             '（主角）：“还不是因为他上课吃面包的事情，我们俩吵了一架。”'
                         ],
-                        showed:0
-                    },
-                    {
-                        id: 4,
-                        showTime: 121.72,
-                        content: [
-                            '（主角）：“广广还是你去帮我告诉小星吧，我就不去了。谢谢你！”'
-                        ],
-                        showed:0
-                    },
-                    {
-                        id: 5,
-                        showTime: 153.2,
-                        content: [
-                             '（主角）：“小星，我也有要跟你道歉的地方，前天你心情不好，我不应该跟你争吵，我也应该更宽容一点，谢谢你买的新文具盒！”'
-                        ],
-                        showed:0
+                        showed: 0
                     },
                     {
                         id: 6,
-                        showTime: 158.54,
+                        showTime: 159,
                         content: [
                             '接下来几天你和小星都在冷战。'
                         ],
-                        showed:0
+                        showed: 0
                     }
                 ],
                 showMsg: false,
@@ -111,6 +95,7 @@
                 orderNum: 0,
                 videoGrade: '',
                 videoStatus: false,
+                showTitle: false
             }
         },
         computed: {},
@@ -132,7 +117,7 @@
             getInfo() {
                 let userData = getItem('studentInfo')
                 this.studentId = userData.studentId
-                this.studentName = userData.studentName
+                this.studentName = userData.name
             },
             detail() {
                 let url = '/course/detail';
@@ -141,9 +126,14 @@
                 this.$httpWeb.fetch(url, p)
                     .then(res => {
                         this.questions = res.data.questions
+                        this.questions.forEach(function (obj) {
+                            obj.isShow = true
+                            obj.crux = 0
+                        })
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
+                        this.showTitle = true
                         console.log(res.data)
                         this.sourceSrc = this.$myUrl.baseUrl() + res.data.video
                         this.nextCourseId = res.data.nextCourseId
@@ -157,7 +147,7 @@
                 _this.questions.forEach(function (question) {
                     question.showTime < currentTime &&
                     (question.showTime + 1) > currentTime &&
-                    //question.isShow==true&&   //todo
+                    question.isShow == true &&   //todo
                     _this.openDialog(question)
                 })
             },
@@ -170,73 +160,12 @@
                 bus.$emit('openDialog', obj)
             },
             closeDialog(answer, question) {
-                if (question.questionId==67){
-                    question.crux=0
-                }
-                switch (question.questionId){
-                    case 67:
-                        question.crux=0
-                        break
-                    case 70:
-                        question.crux=0
-                }
-                switch (answer.answerId){
-                    case 140:
-                        answer.frameStart=100.6
-                        answer.frameEnd=101.6
-                        answer.frameNext=135.72
-                        break
-                    case 141:
-                        answer.type=1
-                        break
-                    case 142:
-                        answer.frameStart=100.6
-                        answer.frameEnd=101.6
-                        answer.frameNext=123.92
-                        break
-                    case 143:
-                        answer.type=3
-                        answer.frameStart=120.72
-                        answer.frameEnd=121.72
-                        answer.frameNext=157.04
-                        break
-                    case 145:
-                        answer.type=3
-                        answer.frameStart=120.72
-                        answer.frameEnd=123.88
-                        answer.frameNext=135.72
-                        break
-                    case 144:
-                        answer.type=3
-                        answer.frameStart=120.72
-                        answer.frameEnd=124
-                        answer.frameNext=135.72
-                        break
-                    case 146:
-                        answer.type=1
-                        break
-                    case 147:
-                    case 148:
-                        answer.frameStart=135.68
-                        answer.frameEnd=136.68
-                        answer.frameNext=157.04
-                        break
-                    case 149:
-                    case 150:
-                    case 151:
-                        answer.type=1
-                        break
-
-                }
-                if (answer.answerId==141) {
-                    answer.type=1
-                }
+                this.questions.forEach(function (obj) {
+                    if (question.questionId == obj.questionId) {
+                        obj.isShow = false
+                    }
+                })
                 if (question.crux == 1 && answer.crux == 1) {
-                    // this.questions.forEach(function (obj) {
-                    //     if (question.questionId == obj.questionId) {
-                    //         obj.isShow = false
-                    //     }
-                    // })
                     this.answers.push({
                         questionId: question.questionId,
                         option: answer.answerOption,
@@ -245,17 +174,78 @@
                     this.errorCount = 0
                 }
                 if (question.crux == 0) {
-                    // this.questions.forEach(function (obj) {
-                    //     if (question.questionId == obj.questionId) {
-                    //         obj.isShow = false
-                    //     }
-                    // })
                     this.answers.push({
                         questionId: question.questionId,
                         option: answer.answerOption,
                         answerId: answer.answerId
                     })
                 }
+                let _this = this
+                switch (question.questionId){
+                    case 67:
+                        question.crux=0
+                        break
+                    case 68:
+                        question.crux=0
+                        break
+                    case 70:
+                        question.answers[0].feedback = _this.studentName+'：“小星，我也有要跟你道歉的地方，前天你心情不好，我不应该跟你争吵，我也应该更宽容一点，谢谢你买的新文具盒！”'
+                        question.answers[0].type = 2
+                        question.answers[1].feedback = _this.studentName+'：“小星，我也有要跟你道歉的地方，前天你心情不好，我不应该跟你争吵，我也应该更宽容一点，谢谢你买的新文具盒！”'
+                        question.answers[1].type = 2
+                        question.answers[2].feedback = _this.studentName+'：“小星，我也有要跟你道歉的地方，前天你心情不好，我不应该跟你争吵，我也应该更宽容一点，谢谢你买的新文具盒！”'
+                        question.answers[2].type = 2
+                        _this.video.addEventListener('timeupdate',function () {
+                            let current = this.currentTime
+                            if (current>157&&current<158){
+                                _this.video.pause()
+                                _this.endCourse()
+                            }
+                        })
+                }
+                switch (answer.answerId){
+                    case 140:
+                        this.questions.forEach(function (obj) {
+                            if (obj.questionId==69) obj.isShow=false
+                        })
+                        _this.video.currentTime = 135.72
+                        _this.video.play()
+                        return
+                    case 141:
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId==69) obj.isShow=false
+                        })
+                        answer.type=1
+                        break
+                    case 142:
+                        _this.video.currentTime = 123.92
+                        _this.video.play()
+                        return
+                    case 143:
+                        _this.video.currentTime = 135.72
+                        _this.video.play()
+                        return
+                    case 145:
+                        _this.video.currentTime = 158.04
+                        _this.video.play()
+                        return
+                    case 144:
+                        answer.feedback = _this.studentName+'：“广广还是你去帮我告诉小星吧，我就不去了。谢谢你！”'
+                        answer.type=4
+                        answer.frameStart=120.72
+                        answer.frameEnd=124
+                        answer.frameNext=135.72
+                        break
+                    case 146:
+                        _this.video.play()
+                        return
+                    case 147:
+                    case 148:
+                        _this.video.currentTime = 158.04
+                        _this.video.play()
+                        return
+                }
+
                 this.checkAnswer(answer, question, this.videoGrade)
             },
             checkAnswer(answer, question, videoGrade) {
@@ -302,7 +292,7 @@
                             _this.failedCourse()
                         }
                     } else {
-                        _this.video.currentTime = _this.video.currentTime + 1
+                        //_this.video.currentTime+=1
                         _this.video.play()
                     }
                 }, answer.feedbackDuration)
@@ -312,25 +302,22 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                setTimeout(function () {
-                    if (answer.crux == 0 && question.crux == 1) {
-                        if (_this.errorCount < 3) {
-                            _this.errorCount++
-                            _this.openDialog(question)
-                        } else {
-                            //视频播放结束，弹出游戏失败等信息
-                            _this.answers.push({
-                                questionId: question.questionId,
-                                option: answer.answerOption,
-                                answerId: answer.answerId
-                            })
-                            _this.failedCourse()
-                        }
+                if (answer.crux == 0 && question.crux == 1) {
+                    if (_this.errorCount < 3) {
+                        _this.errorCount++
+                        _this.openDialog(question)
                     } else {
-                        _this.video.currentTime = _this.video.currentTime + 1
-                        _this.video.play()
+                        //视频播放结束，弹出游戏失败等信息
+                        _this.answers.push({
+                            questionId: question.questionId,
+                            option: answer.answerOption,
+                            answerId: answer.answerId
+                        })
+                        _this.failedCourse()
                     }
-                }, answer.feedbackDuration)
+                } else {
+                    _this.video.play()
+                }
             },
             feedBackAndJump(answer, question, videoGrade) {
                 if (answer.feedbackDuration == null || answer.feedbackDuration == '' || answer.feedbackDuration == undefined) {
@@ -366,49 +353,44 @@
                             if (question.crux == 1 && answer.crux == 0) {
                                 _this.openDialog(question)
                             } else {
-                                _this.video.currentTime = answer.frameNext + 1
+                                _this.video.currentTime = answer.frameNext ? answer.frameNext : _this.video.currentTime
                                 _this.video.play()
                             }
                         }
                     })
-                    _this.video.currentTime = answer.frameStart + 1
+                    _this.video.currentTime = answer.frameStart
                     _this.video.play()
                 }, answer.feedbackDuration)
             },
             jump(answer, question) {
-                if (answer.feedbackDuration == null || answer.feedbackDuration == '' || answer.feedbackDuration == undefined) {
-                    answer.feedbackDuration = 3000
-                }
                 let _this = this
-                setTimeout(function () {
-                    if (answer.crux == 0 && question.crux == 1) {
-                        if (_this.errorCount < 3) {
-                            _this.errorCount++
+                if (answer.crux == 0 && question.crux == 1) {
+                    if (_this.errorCount < 3) {
+                        _this.errorCount++
+                    } else {
+                        //视频播放结束，弹出游戏失败等信息
+                        _this.answers.push({
+                            questionId: question.questionId,
+                            option: answer.answerOption,
+                            answerId: answer.answerId
+                        })
+                        _this.failedCourse()
+                        return false
+                    }
+                }
+                _this.video.addEventListener('timeupdate', function () {
+                    if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
+
+                        if (question.crux == 1 && answer.crux == 0) {
+                            _this.openDialog(question)
                         } else {
-                            //视频播放结束，弹出游戏失败等信息
-                            _this.answers.push({
-                                questionId: question.questionId,
-                                option: answer.answerOption,
-                                answerId: answer.answerId
-                            })
-                            _this.failedCourse()
-                            return false
+                            _this.video.currentTime = answer.frameNext ? answer.frameNext : _this.video.currentTime
+                            _this.video.play()
                         }
                     }
-                    _this.video.addEventListener('timeupdate', function () {
-                        if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-
-                            if (question.crux == 1 && answer.crux == 0) {
-                                _this.openDialog(question)
-                            } else {
-                                _this.video.currentTime = answer.frameNext + 1
-                                _this.video.play()
-                            }
-                        }
-                    })
-                    _this.video.currentTime = answer.frameStart + 1
-                    _this.video.play()
-                }, answer.feedbackDuration)
+                })
+                _this.video.currentTime = answer.frameStart
+                _this.video.play()
             },
             startCourse() { //开始学习课程
                 let url = '/course/start';
@@ -464,22 +446,12 @@
             showDialog(currentTime) {
                 let _this = this
                 _this.dialog.forEach(function (obj) {
-                    if (obj.showTime < currentTime && (obj.showTime + 1) > currentTime){
-                        obj.showed=1
-                        if (obj.id==5){
-                            _this.video.addEventListener('timeupdate',function () {
+                    if (obj.showTime < currentTime && (obj.showTime + 1) > currentTime && obj.showed == 0) {
+                        obj.showed = 1
+                        if (obj.id == 6) {
+                            _this.video.addEventListener('timeupdate', function () {
                                 let currentTime = this.currentTime
-                                if (currentTime>156.5&&currentTime<157.5){
-                                    _this.video.pause()
-                                    _this.endCourse()
-                                }
-
-                            })
-                        }
-                        if (obj.id==6){
-                            _this.video.addEventListener('timeupdate',function () {
-                                let currentTime = this.currentTime
-                                if (currentTime>159.54&&currentTime<160.84){
+                                if (currentTime > 160 && currentTime < 161) {
                                     _this.video.pause()
                                     _this.failedCourse()
                                 }
@@ -491,17 +463,16 @@
                         _this.video.pause()
                         setTimeout(function () {
                             _this.showDialogMsg = false
-                            _this.video.currentTime +=1
                             _this.video.play()
                         }, 2000 * obj.content.length)
 
                     }
                 })
             },
-            formatDialogMsg(){
+            formatDialogMsg() {
                 let _this = this
                 let str = JSON.stringify(_this.dialog)
-                let dialog = str.replace(/（主角）/g,_this.studentName)
+                let dialog = str.replace(/（主角）/g, _this.studentName)
                 _this.dialog = JSON.parse(dialog)
             }
         },

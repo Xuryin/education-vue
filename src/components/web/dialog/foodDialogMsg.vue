@@ -45,7 +45,10 @@
     }
 
     .shadow {
-        height: 100%;
+        height: calc(98% - 10rem);
+        margin-top: 10rem;
+        margin-left: 18%;
+        width: 64%;
         opacity: 0.2;
         background-color: #333333;
         position: absolute;

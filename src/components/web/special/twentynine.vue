@@ -2,7 +2,7 @@
     <div class="videoPage">
         <div class="video_content_title">
             <img src="~static/imgs/btn_back.png" alt="返回" @click="$router.push({name: 'courseDetails'})">
-            <span>{{orderNum}}：{{videoTitle}}</span>
+            <span v-show="showTitle">{{orderNum}}：{{videoTitle}}</span>
         </div>
         <div class="video_content">
             <video controls id="vid" crossorigin="*" :src="sourceSrc" autoplay
@@ -83,6 +83,7 @@
                 orderNum: 0,
                 videoGrade: '',
                 videoStatus: false,
+                showTitle: false
             }
         },
         computed: {},
@@ -113,9 +114,13 @@
                 this.$httpWeb.fetch(url, p)
                     .then(res => {
                         this.questions = res.data.questions
+                        this.questions.forEach(function (obj) {
+                            obj.isShow = true
+                        })
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
+                        this.showTitle = true
                         console.log(res.data)
                         this.sourceSrc = this.$myUrl.baseUrl() + res.data.video
                         this.nextCourseId = res.data.nextCourseId
@@ -129,7 +134,7 @@
                 _this.questions.forEach(function (question) {
                     question.showTime < currentTime &&
                     (question.showTime + 1) > currentTime &&
-                    //question.isShow==true&&   //todo
+                    question.isShow == true &&   //todo
                     _this.openDialog(question)
                 })
             },
@@ -142,13 +147,19 @@
                 bus.$emit('openDialog', obj)
             },
             closeDialog(answer, question) {
+                this.questions.forEach(function (obj) {
+                    if (obj.questionId == question.questionId) {
+                        obj.isShow = false
+                    }
+                })
+                question.isShow = false
                 if (question.crux == 1 && answer.crux == 1) {
                     this.answers.push({
                         questionId: question.questionId,
                         option: answer.answerOption,
                         answerId: answer.answerId
                     })
-                    this.errorCount = 0
+                    this.errorCount = 1
                 }
                 if (question.crux == 0) {
                     this.answers.push({
@@ -199,11 +210,16 @@
                                 option: answer.answerOption,
                                 answerId: answer.answerId
                             })
+                            _this.questions.forEach(function (obj) {
+                                if (obj.questionId == question.questionId) {
+                                    obj.isShow = false
+                                }
+                            })
                             //视频播放结束，弹出游戏失败等信息
                             _this.failedCourse()
                         }
                     } else {
-                        _this.video.currentTime = _this.video.currentTime+1
+                        _this.video.currentTime = _this.video.currentTime
                         _this.video.play()
                     }
                 }, answer.feedbackDuration)
@@ -213,17 +229,6 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                if (question.questionId === 87) {
-                    _this.questions.forEach(function (obj) {
-                        if (answer.answerId === 194&&obj.questionId==88) {
-                            _this.openDialog(obj)
-                        }else if (answer.answerId === 195&&obj.questionId==89){
-                            _this.openDialog(obj)
-                        }else if (answer.answerId === 196&&obj.questionId==90){
-                            _this.openDialog(obj)
-                        }
-                    })
-                }
                 setTimeout(function () {
                     if (answer.crux == 0 && question.crux == 1) {
                         if (_this.errorCount < 3) {
@@ -236,10 +241,15 @@
                                 option: answer.answerOption,
                                 answerId: answer.answerId
                             })
+                            this.questions.forEach(function (obj) {
+                                if (obj.questionId == question.questionId) {
+                                    obj.isShow = false
+                                }
+                            })
                             _this.failedCourse()
                         }
                     } else {
-                        _this.video.currentTime = _this.video.currentTime+1
+                        _this.video.currentTime = _this.video.currentTime
                         _this.video.play()
                     }
                 }, answer.feedbackDuration)
@@ -260,6 +270,20 @@
                     if (answer.crux == 0 && question.crux == 1) {
                         if (_this.errorCount < 3) {
                             _this.errorCount++
+                            setTimeout(function () {
+                                _this.questions.forEach(function (obj) {
+                                    if (obj.questionId == question.questionId) {
+                                        obj.isShow = true
+                                    }
+                                })
+                            }, 2000)
+                            _this.video.addEventListener('timeupdate', function () {
+                                if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
+                                    if (question.isShow === true) _this.openDialog(question)
+                                }
+                            })
+                            _this.video.currentTime = answer.frameStart
+                            _this.video.play()
                         } else {
                             //视频播放结束，弹出游戏失败等信息
                             _this.answers.push({
@@ -267,24 +291,33 @@
                                 option: answer.answerOption,
                                 answerId: answer.answerId
                             })
+                            _this.questions.forEach(function (obj) {
+                                if (obj.questionId == question.questionId) {
+                                    obj.isShow = false
+                                }
+                            })
                             _this.failedCourse()
                             return false
                         }
 
-                    }
-                    _this.video.addEventListener('timeupdate', function () {
-                        if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-
-                            if (question.crux == 1 && answer.crux == 0) {
-                                _this.openDialog(question)
-                            } else {
-                                _this.video.currentTime = answer.frameNext + 1
-                                _this.video.play()
+                    } else {
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = false
                             }
-                        }
-                    })
-                    _this.video.currentTime = answer.frameStart + 1
-                    _this.video.play()
+                        })
+                        _this.video.addEventListener('timeupdate', function () {
+                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
+                                if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                                    answer.frameNext += 1
+                                }
+                                _this.video.currentTime = answer.frameNext
+                            }
+                        })
+                        _this.video.currentTime = answer.frameStart
+                        _this.video.play()
+                    }
+
                 }, answer.feedbackDuration)
             },
             jump(answer, question) {
@@ -292,35 +325,57 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                setTimeout(function () {
-                    if (answer.crux == 0 && question.crux == 1) {
-                        if (_this.errorCount < 3) {
-                            _this.errorCount++
-                        } else {
-                            //视频播放结束，弹出游戏失败等信息
-                            _this.answers.push({
-                                questionId: question.questionId,
-                                option: answer.answerOption,
-                                answerId: answer.answerId
-                            })
-                            _this.failedCourse()
-                            return false
-                        }
-                    }
-                    _this.video.addEventListener('timeupdate', function () {
-                        if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-
-                            if (question.crux == 1 && answer.crux == 0) {
-                                _this.openDialog(question)
-                            } else {
-                                _this.video.currentTime = answer.frameNext + 1
-                                _this.video.play()
+                if (answer.crux == 0 && question.crux == 1) {
+                    setTimeout(function () {
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = true
                             }
+                        })
+                    },2000)
+                    if (_this.errorCount < 3) {
+                        _this.errorCount++
+                        _this.video.addEventListener('timeupdate', function () {
+                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
+                                if (question.isShow===true) _this.openDialog(question)
+                            }
+                        })
+                        console.log(answer.frameStart)
+                        _this.video.currentTime = answer.frameStart
+                        _this.video.play()
+                    } else {
+                        //视频播放结束，弹出游戏失败等信息
+                        _this.answers.push({
+                            questionId: question.questionId,
+                            option: answer.answerOption,
+                            answerId: answer.answerId
+                        })
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = false
+                            }
+                        })
+                        _this.failedCourse()
+                        return false
+                    }
+
+                } else {
+                    _this.questions.forEach(function (obj) {
+                        if (obj.questionId == question.questionId) {
+                            obj.isShow = false
                         }
                     })
-                    _this.video.currentTime = answer.frameStart + 1
+                    _this.video.addEventListener('timeupdate', function () {
+                        if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
+                            if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                                answer.frameNext += 1
+                            }
+                            _this.video.currentTime = answer.frameNext
+                        }
+                    })
+                    _this.video.currentTime = answer.frameStart
                     _this.video.play()
-                }, answer.feedbackDuration)
+                }
             },
             startCourse() { //开始学习课程
                 let url = '/course/start';
@@ -376,14 +431,13 @@
             showDialog(currentTime) {
                 let _this = this
                 _this.dialog.forEach(function (obj) {
-                    if (obj.showTime < currentTime && (obj.showTime + 1) > currentTime){
+                    if (obj.showTime < currentTime && (obj.showTime + 1) > currentTime&&obj.showed==0){
                         obj.showed=1
                         _this.dialogMsg = obj.content
                         _this.showDialogMsg = true
                         _this.video.pause()
                         setTimeout(function () {
                             _this.showDialogMsg = false
-                            _this.video.currentTime +=1
                             _this.video.play()
                         }, 2000 * obj.content.length)
 

@@ -61,10 +61,11 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="less">
+    @import "~static/less/reset.less";
     .content_border {
-        min-width: 1280px;
         width: 100%;
+        min-width: 1280px;
         position: absolute;
         bottom: 20%;
         display: flex;
@@ -72,7 +73,7 @@
     }
 
     .dialog_page {
-        margin: 0 auto;
+        height: 100%;
     }
 
     .finishedDialog {
@@ -159,7 +160,6 @@
         height: 21.25rem;
         position: absolute;
         bottom: 30%;
-        left: 10%;
         background: #fff;
         border: 1px solid #ccc;
         border-radius: 10px;
@@ -174,6 +174,7 @@
 
     .finishedDialog_2 p {
         font-size: 1.5rem;
+        margin-top: 2rem;
     }
 
     .finishedDialog_2 button {
@@ -184,6 +185,6 @@
         border-radius: 10px;
         color: #ffffff;
         font-size: 2rem;
-        margin-top: 2rem;
+        margin-top: 3rem;
     }
 </style>

@@ -12,7 +12,7 @@
         </div>
         <ul class="details_content">
             <li v-for="(value, key) in listMyCourse.items" :key="key"
-                @click="playVideo(value.courseId)">
+                @click="playVideo(value.courseId, value.imgUrl)">
                 <div class="video_show">
                     <img :src="$myUrl.baseUrl() + value.imgUrl">
                     <span class="video_index">{{key + 1}}集</span>
@@ -32,7 +32,7 @@
 
 <script type="text/ecmascript-6">
     import {bus} from '../../../tools/bus'
-    import {getItem} from '../../../tools/common'
+    import {getItem, setItem} from '../../../tools/common'
     import vFoot from '../common/Footer.vue'
     export default {
         inject: ['reload'],
@@ -79,6 +79,7 @@
                     p.studentId = this.userData.studentId;
                     p.gradeNum = value.gradeNum
                     this.courseList(p)
+                    setItem('currentGrade', this.gradeChecked)
                 }
             },
             courseList(p){
@@ -95,44 +96,46 @@
                 this.userData = getItem('studentInfo')
                 this.gradeChecked = this.userData.gradeNum
             },
-            playVideo(courseId){
+            playVideo(courseId, imgUrl){
                 let videoUrl = '/course/detail';
                 let p = {};
                 let _this = this
                 let studentId = _this.userData.studentId
                 p.courseId = courseId;
                 if (courseId===25){
-                    this.$router.push({name: 'twentyFif', query: {courseId:courseId}})
+                    this.$router.push({name: 'twentyFif', query: {courseId:courseId, poster: imgUrl}})
                 } else if (courseId===27){
-                    this.$router.push({name: 'twentyseven', query: {courseId:courseId}})
+                    this.$router.push({name: 'twentyseven', query: {courseId:courseId, poster: imgUrl}})
                 }else if (courseId===28){
-                    this.$router.push({name: 'twentyeight', query: {courseId:courseId}})
+                    this.$router.push({name: 'twentyeight', query: {courseId:courseId, poster: imgUrl}})
                 }else if (courseId===29){
-                    this.$router.push({name: 'twentynine', query: {courseId:courseId}})
+                    this.$router.push({name: 'twentynine', query: {courseId:courseId, poster: imgUrl}})
                 }else if (courseId===31){
-                    this.$router.push({name: 'thirtyone', query: {courseId:courseId}})
+                    this.$router.push({name: 'thirtyone', query: {courseId:courseId, poster: imgUrl}})
                 }else if (courseId===32){
-                    this.$router.push({name: 'thirtytwo', query: {courseId:courseId}})
+                    this.$router.push({name: 'thirtytwo', query: {courseId:courseId, poster: imgUrl}})
                 }
                 else {
-                    this.$router.push({name: 'video', query: {courseId:courseId}})
+                    this.$router.push({name: 'video', query: {courseId:courseId, poster: imgUrl}})
                 }
             }
         },
         mounted() {
-            this.getInfo()
-            let p = {}
-            p.studentId = this.userData.studentId;
-            this.courseList(p)
-        },
-        activated () {
             let _this = this
+            let tab = this.$route.query.tab
+            this.getInfo()
             bus.$on('getGrade', function () {
                 _this.getInfo()
             })
             let p = {}
-            p.studentId = this.userData.studentId;
-            p.gradeNum = this.gradeChecked
+            if (tab != 1) {
+                p.studentId = this.userData.studentId;
+                p.gradeNum = getItem('currentGrade')
+                this.gradeChecked = getItem('currentGrade')
+
+            } else {
+                p.studentId = this.userData.studentId;
+            }
             this.courseList(p)
             bus.$emit('sendTitle', this.title)
         },

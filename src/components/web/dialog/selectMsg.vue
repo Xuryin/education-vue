@@ -35,6 +35,7 @@
         },
         mounted () {
             this.getGrade()
+            console.log(this.msg)
         }
     }
 </script>
@@ -46,7 +47,10 @@
     }
 
     .shadow {
-        height: 100%;
+        height: calc(98% - 10rem);
+        margin-top: 10rem;
+        margin-left: 18%;
+        width: 64%;
         opacity: 0.2;
         background-color: #333333;
         position: absolute;
@@ -71,6 +75,7 @@
         background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
         color: @fff;
         font-size: 1.5rem;
+        line-height: 2rem;
         span {
             letter-spacing: 0.1rem;
         }
@@ -84,8 +89,18 @@
         background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
         color: @fff;
         font-size: 1.5rem;
-        span {
-            letter-spacing: 0.1rem;
+        line-height: 3rem;
+
+        ruby {
+        }
+
+        rb {
+            letter-spacing: 0.8rem;
+        }
+
+        rt {
+            height: 1.5rem;
+            padding-top: 0.2rem;
         }
     }
 </style>

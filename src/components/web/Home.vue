@@ -49,7 +49,7 @@
         },
         methods: {
             routerTo(dir) {
-                this.$router.push({name: dir})
+                this.$router.push({name: dir, query: {tab: 1}})
             }
         },
         created() {
@@ -71,7 +71,7 @@
         width: 100%;
         height: 100%;
         overflow-x: hidden;
-        background: url(~static/imgs/index_bj.jpg) no-repeat 100% 120%;
+        background: url(~static/imgs/index_bj.jpg) no-repeat  fixed 100% 100%;
     }
 
     .img_shadow {

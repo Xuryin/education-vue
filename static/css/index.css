@@ -1,29 +1,6 @@
 @font-face {
-    font-family: 'katong';
-    src: url('../fonts/fangzhengkatong.ttf'),
-    url('../fonts/fangzhengkatong.otf'),
-    url('../fonts/fangzhengkatong.woff'),
-    url('../fonts/fangzhengkatong.eot')
-}
-
-@font-face {
     font-family: 'txjlzcyj';
     src: url('../fonts/txjlzcyj.ttf')
-}
-
-@font-face {
-    font-family: 'pinyin';
-    src: url('../fonts/pinyin.ttf')
-}
-
-@font-face {
-    font-family: 'pinyinok';
-    src: url('../fonts/Pinyinok.ttf')
-}
-
-@font-face {
-    font-family: 'pinyin2';
-    src: url('../fonts/pinyin2.ttf')
 }
 
 html, body {

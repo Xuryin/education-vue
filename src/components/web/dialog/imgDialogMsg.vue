@@ -2,24 +2,16 @@
     <div class="thisPage">
         <div class="shadow"></div>
         <div class="content_border">
-            <div class="content">
-                <ul>
-                    <li @click="hidden('A')">
-                        <img src="" alt="电玩城">
-                    </li>
-                    <li @click="hidden('B')">
-                        <img src="" alt="小卖部">
-                    </li>
-                    <li @click="hidden('C')">
-                        <img src="" alt="糖果屋">
-                    </li>
-                    <li @click="hidden('D')">
-                        <img src="" alt="大型超市">
-                    </li>
-                </ul>
+            <div class="content" >
+                <span class="content-title">如果你是小玉，你该怎么回答</span>
+                <div class="content-radio">
+                    <div class="shop"></div>
+                    <div class="supermarket"></div>
+                    <div class="gameCenter"></div>
+                    <div class="snacks"></div>
+                </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -36,19 +28,23 @@
             }
         },
         mounted(){
-
+            console.log(3232)
         }
     }
 </script>
 
 <style scoped lang="less">
     @import "~static/less/reset.less";
+
     .thisPage {
         height: 100%;
     }
 
     .shadow {
-        height: 100%;
+        height: calc(98% - 10rem);
+        margin-top: 10rem;
+        margin-left: 18%;
+        width: 64%;
         opacity: 0.2;
         background-color: #333333;
         position: absolute;
@@ -56,32 +52,76 @@
         left: 0;
     }
 
+    .content-title {
+        font-size: 1.5rem;
+        text-align: center;
+        line-height: 2.5rem;
+        padding: 1.2rem 2rem;
+        color: #ffffff;
+        border-radius: 10px 10px 0 0;
+        background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
+        display: flex;
+        flex-wrap: wrap;
+        letter-spacing: 0.15rem;
+        word-wrap: break-word;
+    }
+
+    .content-title_question {
+        vertical-align: text-bottom;
+    }
+
     .content_border {
-        min-width: 1280px;
         width: 100%;
+        min-width: 1280px;
         position: absolute;
-        bottom: 40%;
+        bottom: 20%;
         display: flex;
         justify-content: center;
     }
 
     .content {
-        padding: 2rem 2rem;
-        max-width: 40rem;
-        min-width: 20rem;
-        border-radius: 5px;
-        background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
-        color: @fff;
-        font-size: 1.5rem;
-        span {
-            letter-spacing: 0.1rem;
-        }
-        ul {
-            display: flex;
-            justify-content: space-between;
-            img {
+        border-radius: 10px;
+        width: 460px;
+        background-color: @fff;
+    }
 
-            }
+    .content-radio {
+        width: 100%;
+        height: 240px;
+        background-image: url("../../../../static/imgs/video_scene.png");
+        background-repeat: no-repeat;
+        background-position: 0 0;
+        background-size: 100% 100%;
+        position: relative;
+        div {
+            position: absolute;
+        }
+        .shop {
+            left: 20px;
+            top: 90px;
+            width: 80px;
+            height: 80px;
+        }
+
+        .supermarket {
+            left: 160px;
+            top: 0;
+            width: 130px;
+            height: 100px;
+        }
+
+        .gameCenter {
+            left: 300px;
+            top: 20px;
+            width: 90px;
+            height: 150px;
+        }
+
+        .snacks {
+            left: 145px;
+            top: 139px;
+            width: 90px;
+            height: 90px;
         }
     }
 </style>

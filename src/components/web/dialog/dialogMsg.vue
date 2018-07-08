@@ -80,6 +80,7 @@
         background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
         color: @fff;
         font-size: 1.5rem;
+        line-height: 2rem;
         span {
             letter-spacing: 0.1rem;
         }

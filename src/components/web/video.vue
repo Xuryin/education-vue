@@ -1,15 +1,15 @@
 <template>
-    <div class="videoPage">
+    <div class="videoPage" >
         <div class="video_content_title">
             <img src="~static/imgs/btn_back.png" alt="返回" @click="$router.push({name: 'courseDetails'})">
-            <span>{{orderNum}}：{{videoTitle}}</span>
+            <span v-show="showTitle">{{orderNum}}：{{videoTitle}}</span>
         </div>
         <div class="video_content">
-            <video id="vid" crossorigin="*" :src="sourceSrc" autoplay controls
+            <video id="vid" crossorigin="*" :src="sourceSrc"  controls autoplay
                    width="64%"
-                   @click="togglePlay">
+                   @click="togglePlay" :poster="this.$myUrl.baseUrl() + poster ">
             </video>
-            <img src="~static/imgs/play.png" alt="播放" v-if="videoStatus" class="video_status" @click="togglePlay">
+            <img src="~static/imgs/play.png" alt="播放" v-show="videoStatus" class="video_status" @click="togglePlay">
         </div>
         <v-Msg @closeDialog="closeDialog"></v-Msg>
 
@@ -27,15 +27,15 @@
     import {selectMsgDIalog, revertNumber, getItem} from '../../tools/common'
 
     export default {
-        inject:['reload'],
+        inject: ['reload'],
         data() {
             return {
-                sourceSrc:'',
+                sourceSrc: '',
                 questions: [],
                 showMsg: false,
                 msg: {},
-                finishedMsg:{},
-                showfinishedMsg:false,
+                finishedMsg: {},
+                showfinishedMsg: false,
                 showFlag: false,
                 isPause: false,
                 errorCount: 1,
@@ -46,24 +46,26 @@
                 title: '交互式课程',
                 videoTitle: '',
                 videoWidth: '',
-                currentTime:0,
-                video:document.getElementById('video'),
-                nextCourseId:'',
-                orderNum: 0,
+                currentTime: 0,
+                video: document.getElementById('video'),
+                nextCourseId: '',
+                orderNum: "",
                 videoGrade: '',
-                videoStatus: false
+                videoStatus: false,
+                showTitle: false,
+                poster: this.$myUrl.baseUrl() + '/video/course/1/2/2.jpg'
             }
         },
-        computed: {
-
-        },
-        created:function () {
+        computed: {},
+        created: function () {
             this.getInfo()
+            // this.poster = this.$route.query.poster
+            this.poster = '/video/course/1/2/2.jpg'
             this.courseId = this.$route.query.courseId
             this.detail()
         },
         methods: {
-            togglePlay () {
+            togglePlay() {
                 if (this.video.paused) {
                     this.video.play()
                     this.videoStatus = false
@@ -72,29 +74,30 @@
                     this.videoStatus = true
                 }
             },
-            getInfo(){
+            getInfo() {
                 let userData = getItem('studentInfo')
                 this.studentId = userData.studentId
             },
-            detail(){
+            detail() {
                 let url = '/course/detail';
                 let p = {};
                 p.courseId = this.courseId;
-                this.$httpWeb.fetch(url,p)
-                    .then(res=>{
+                this.$httpWeb.fetch(url, p)
+                    .then(res => {
                         this.questions = res.data.questions
                         this.questions.forEach(function (obj) {
-                            obj.isShow=true
+                            obj.isShow = true
                         })
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
+                        this.showTitle = true
                         console.log(res.data)
                         this.sourceSrc = this.$myUrl.baseUrl() + res.data.video
                         this.nextCourseId = res.data.nextCourseId
                     })
-                    .catch(err=>{
-                        console.log('err',err)
+                    .catch(err => {
+                        console.log('err', err)
                     })
             },
             showQuestion(currentTime) {
@@ -102,7 +105,7 @@
                 _this.questions.forEach(function (question) {
                     question.showTime < currentTime &&
                     (question.showTime + 1) > currentTime &&
-                    question.isShow==true&&   //todo
+                    question.isShow == true &&   //todo
                     _this.openDialog(question)
                 })
             },
@@ -116,10 +119,11 @@
             },
             closeDialog(answer, question) {
                 this.questions.forEach(function (obj) {
-                    if (obj.questionId==question.questionId){
-                        obj.isShow=false
+                    if (obj.questionId == question.questionId) {
+                        obj.isShow = false
                     }
                 })
+                question.isShow = false
                 if (question.crux == 1 && answer.crux == 1) {
                     this.answers.push({
                         questionId: question.questionId,
@@ -141,13 +145,13 @@
                 let _this = this
                 switch (answer.type) {
                     case 1:
-                        _this.natural(answer,question)
+                        _this.natural(answer, question)
                         break
                     case 2:
-                        _this.showFeedback(answer,question, videoGrade)
+                        _this.showFeedback(answer, question, videoGrade)
                         break
                     case 3:
-                        _this.jump(answer,question)
+                        _this.jump(answer, question)
                         break
                     case 4:
                         _this.feedBackAndJump(answer, question, videoGrade)
@@ -159,7 +163,11 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                _this.msg = {'feedback':answer.feedback,'feedbackPinyin':answer.feedbackPinyin, 'gradeNum': videoGrade}
+                _this.msg = {
+                    'feedback': answer.feedback,
+                    'feedbackPinyin': answer.feedbackPinyin,
+                    'gradeNum': videoGrade
+                }
                 _this.showMsg = true
                 setTimeout(function () {
                     _this.showMsg = false
@@ -173,9 +181,9 @@
                                 option: answer.answerOption,
                                 answerId: answer.answerId
                             })
-                            this.questions.forEach(function (obj) {
-                                if (obj.questionId==question.questionId){
-                                    obj.isShow=false
+                            _this.questions.forEach(function (obj) {
+                                if (obj.questionId == question.questionId) {
+                                    obj.isShow = false
                                 }
                             })
                             //视频播放结束，弹出游戏失败等信息
@@ -187,7 +195,7 @@
                     }
                 }, answer.feedbackDuration)
             },
-            natural(answer,question){
+            natural(answer, question) {
                 if (answer.feedbackDuration == null || answer.feedbackDuration == '' || answer.feedbackDuration == undefined) {
                     answer.feedbackDuration = 3000
                 }
@@ -205,8 +213,8 @@
                                 answerId: answer.answerId
                             })
                             this.questions.forEach(function (obj) {
-                                if (obj.questionId==question.questionId){
-                                    obj.isShow=false
+                                if (obj.questionId == question.questionId) {
+                                    obj.isShow = false
                                 }
                             })
                             _this.failedCourse()
@@ -222,23 +230,27 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                _this.msg = {'feedback':answer.feedback,'feedbackPinyin':answer.feedbackPinyin, 'gradeNum': videoGrade}
+                _this.msg = {
+                    'feedback': answer.feedback,
+                    'feedbackPinyin': answer.feedbackPinyin,
+                    'gradeNum': videoGrade
+                }
                 _this.showMsg = true
                 setTimeout(function () {
                     _this.showMsg = false
                     if (answer.crux == 0 && question.crux == 1) {
-                        let questionObj = ''
-                        _this.questions.forEach(function (obj) {
-                            if (obj.questionId==question.questionId){
-                                obj.isShow=true
-                                questionObj = obj
-                            }
-                        })
                         if (_this.errorCount < 3) {
                             _this.errorCount++
-                            _this.video.addEventListener('timeupdate',function () {
-                                if (_this.video.currentTime>answer.frameEnd && (_this.video.currentTime<answer.frameEnd + 1)) {
-                                    if (questionObj.isShow==true) _this.openDialog(question)
+                            setTimeout(function () {
+                                _this.questions.forEach(function (obj) {
+                                    if (obj.questionId == question.questionId) {
+                                        obj.isShow = true
+                                    }
+                                })
+                            }, 2000)
+                            _this.video.addEventListener('timeupdate', function () {
+                                if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
+                                    if (question.isShow === true) _this.openDialog(question)
                                 }
                             })
                             _this.video.currentTime = answer.frameStart
@@ -251,24 +263,26 @@
                                 answerId: answer.answerId
                             })
                             _this.questions.forEach(function (obj) {
-                                if (obj.questionId==question.questionId){
-                                    obj.isShow=false
+                                if (obj.questionId == question.questionId) {
+                                    obj.isShow = false
                                 }
                             })
                             _this.failedCourse()
                             return false
                         }
 
-                    }else {
+                    } else {
                         _this.questions.forEach(function (obj) {
-                            if (obj.questionId==question.questionId){
-                                obj.isShow=false
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = false
                             }
                         })
-                        _this.video.addEventListener('timeupdate',function () {
-                            if (_this.video.currentTime>answer.frameEnd && (_this.video.currentTime<answer.frameEnd + 1)) {
+                        _this.video.addEventListener('timeupdate', function () {
+                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
+                                if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                                    answer.frameNext += 1
+                                }
                                 _this.video.currentTime = answer.frameNext
-                                _this.video.play()
                             }
                         })
                         _this.video.currentTime = answer.frameStart
@@ -282,56 +296,57 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                setTimeout(function () {
-                    if (answer.crux == 0 && question.crux == 1) {
-                        let questionObj = ''
+                if (answer.crux == 0 && question.crux == 1) {
+                    setTimeout(function () {
                         _this.questions.forEach(function (obj) {
-                            if (obj.questionId==question.questionId){
-                                obj.isShow=true
-                                questionObj = obj
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = true
                             }
                         })
-                        if (_this.errorCount < 3) {
-                            _this.errorCount++
-                            _this.video.addEventListener('timeupdate',function () {
-                                if (_this.video.currentTime>answer.frameEnd && (_this.video.currentTime<answer.frameEnd + 1)) {
-                                    if (questionObj.isShow==true) _this.openDialog(question)
-                                }
-                            })
-                            _this.video.currentTime = answer.frameStart
-                            _this.video.play()
-                        } else {
-                            //视频播放结束，弹出游戏失败等信息
-                            _this.answers.push({
-                                questionId: question.questionId,
-                                option: answer.answerOption,
-                                answerId: answer.answerId
-                            })
-                            _this.questions.forEach(function (obj) {
-                                if (obj.questionId==question.questionId){
-                                    obj.isShow=false
-                                }
-                            })
-                            _this.failedCourse()
-                            return false
-                        }
-
-                    }else {
-                        _this.questions.forEach(function (obj) {
-                            if (obj.questionId==question.questionId){
-                                obj.isShow=false
+                    },2000)
+                    if (_this.errorCount < 3) {
+                        _this.errorCount++
+                        _this.video.addEventListener('timeupdate', function () {
+                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
+                                if (question.isShow===true) _this.openDialog(question)
                             }
                         })
-                        _this.video.addEventListener('timeupdate',function () {
-                            if (_this.video.currentTime>answer.frameEnd && (_this.video.currentTime<answer.frameEnd + 1)) {
-                                _this.video.currentTime = answer.frameNext
-                                _this.video.play()
-                            }
-                        })
+                        console.log(answer.frameStart)
                         _this.video.currentTime = answer.frameStart
                         _this.video.play()
+                    } else {
+                        //视频播放结束，弹出游戏失败等信息
+                        _this.answers.push({
+                            questionId: question.questionId,
+                            option: answer.answerOption,
+                            answerId: answer.answerId
+                        })
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = false
+                            }
+                        })
+                        _this.failedCourse()
+                        return false
                     }
-                }, answer.feedbackDuration)
+
+                } else {
+                    _this.questions.forEach(function (obj) {
+                        if (obj.questionId == question.questionId) {
+                            obj.isShow = false
+                        }
+                    })
+                    _this.video.addEventListener('timeupdate', function () {
+                        if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
+                            if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                                answer.frameNext += 1
+                            }
+                            _this.video.currentTime = answer.frameNext
+                        }
+                    })
+                    _this.video.currentTime = answer.frameStart
+                    _this.video.play()
+                }
             },
             startCourse() { //开始学习课程aa
                 let url = '/course/start';
@@ -342,13 +357,12 @@
                 _this.$httpWeb.fetch(url, p)
                     .then(res => {
                         _this.recordId = res.data.recordId
-                        //console.log('ok',res)
                     })
                     .catch(err => {
                         console.log('err', err)
                     })
             },
-            failedCourse(){
+            failedCourse() {
                 let url = '/course/end';
                 let p = {};
                 let _this = this
@@ -359,7 +373,7 @@
                 _this.$httpWeb.fetch(url, p)
                     .then(res => {
                         _this.showfinishedMsg = true
-                        _this.finishedMsg = {complete:0,success:false,score:0}
+                        _this.finishedMsg = {complete: 0, success: false, score: 0}
                     })
                     .catch(err => {
                         console.log('err', err)
@@ -375,7 +389,6 @@
                 p.result = 1
                 _this.$httpWeb.fetch(url, p)
                     .then(res => {
-                        //console.log('ok', res)
                         _this.showfinishedMsg = true
                         _this.finishedMsg = res.data
                         _this.finishedMsg.success = true
@@ -390,9 +403,7 @@
         mounted() {
             let _this = this
             _this.video = document.getElementById('vid')
-            //this.timeUpdate()
             _this.video.ontimeupdate = function () {
-                //console.log(this.currentTime)
                 let currentTime = this.currentTime
                 _this.showQuestion(currentTime)
             }
@@ -401,32 +412,34 @@
             }
             _this.startCourse()
             bus.$emit('sendTitle', _this.title)
-            bus.$on('hidden',function (action) {
+            bus.$on('hidden', function (action) {
                 console.log(action)
-                if (action=='reload'){
+                if (action == 'reload') {
                     _this.reload()
                 }
-                if (action=='next'){
-                    _this.$router.push({name: 'video', query: {courseId:_this.nextCourseId}})
+                if (action == 'next') {
+                    _this.$router.push({name: 'video', query: {courseId: _this.nextCourseId}})
                     _this.reload()
                 }
             })
         },
-        beforeCreate () {
+        beforeCreate() {
             let wid = document.body.clientWidth
             let hei = document.body.clientHeight
             this.videoWidth = wid * 0.75
             this.videoHeight = hei - 200
-
+        },
+        beforeDestroy () {
+            this.video.src = null
         },
         components: {
-            vMsg, vSelectmsg,vFinished
+            vMsg, vSelectmsg, vFinished
         },
     }
 </script>
 
 
-<style lang="less" >
+<style lang="less">
     @import "~static/less/reset.less";
     @import "~static/less/video.less";
 </style>

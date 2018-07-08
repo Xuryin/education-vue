@@ -20,8 +20,9 @@
                 <button @click="login" id="loginButton">登录</button>
                 <span class="teacher_login" @click="$router.push('/tlogin')">教师端登陆</span>
             </div>
-            <span class="copyright">Copyright  2018 广雅传媒（武汉）有限公司</span>
         </div>
+        <span class="copyright">Copyright  2018 广雅传媒（武汉）有限公司</span>
+
     </div>
 </template>
 <script>
@@ -163,9 +164,11 @@
 
     .copyright {
         display: block;
-        font-size: 1.2rem;
+        width: 100%;
+        font-size: 1.5rem;
         text-align: center;
-        margin-top: 25%;
+        position: absolute;
+        bottom: 8%;
         text-shadow: 0 2px #ffffff, 2px 0 #ffffff, -2px 0 #ffffff, 0 -2px #ffffff;
     }
 

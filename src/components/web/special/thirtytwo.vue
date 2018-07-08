@@ -2,7 +2,7 @@
     <div class="videoPage">
         <div class="video_content_title">
             <img src="~static/imgs/btn_back.png" alt="返回" @click="$router.push({name: 'courseDetails'})">
-            <span>{{orderNum}}：{{videoTitle}}</span>
+            <span v-show="showTitle">{{orderNum}}：{{videoTitle}}</span>
         </div>
         <div class="video_content">
             <video controls id="vid" crossorigin="*" :src="sourceSrc" autoplay
@@ -62,7 +62,8 @@
                 nextCourseId: '',
                 orderNum: 0,
                 videoGrade: '',
-                videoStatus: false
+                videoStatus: false,
+                showTitle: false
             }
         },
         computed: {},
@@ -96,6 +97,7 @@
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
+                        this.showTitle = true
                         console.log(res.data)
                         this.sourceSrc = this.$myUrl.baseUrl() + res.data.video
                         this.nextCourseId = res.data.nextCourseId

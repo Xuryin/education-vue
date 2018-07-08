@@ -1,6 +1,6 @@
 <template>
     <div class="footer_bar">
-        <span>@copyright广雅传媒</span>
+        <span>Copyright  2018 广雅传媒（武汉）有限公司</span>
     </div>
 </template>
 

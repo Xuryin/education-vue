@@ -24,14 +24,6 @@ let router = [
                 component: resolve =>
                     require(["@/components/web/course/details.vue"], resolve),
                 meta: {
-                    keepAlive: true
-                }
-            },
-            {
-                path: "/a",
-                component: resolve =>
-                    require(["@/components/web/A.vue"], resolve),
-                meta: {
                     keepAlive: false
                 }
             },

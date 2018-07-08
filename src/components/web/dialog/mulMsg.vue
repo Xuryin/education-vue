@@ -6,10 +6,13 @@
                 <span class="content-title">问题：{{questionData.content}}</span>
                 <div class="content-radio">
                     <ul class="select_text">
-                        <el-checkbox label="复选框 A"></el-checkbox>
-                        <li v-for="(value, key) in questionData.answers" @click="changeAnswer(value)">
-                            <span>{{value.answerOption}}.{{value.answerContent}}</span>
+                        <el-checkbox-group v-model="checkList">
+                        <li v-for="(value, key) in questionData.answers">
+                            <!--<span>{{value.answerOption}}.{{value.answerContent}}</span>-->
+                            <el-checkbox :label="value.answerId+'-'+value.answerOption">{{value.answerOption}}.{{value.answerContent}}</el-checkbox>
                         </li>
+                        </el-checkbox-group>
+                        <li> <button @click="changeAnswer()">提交</button></li>
                     </ul>
                 </div>
             </div>
@@ -24,13 +27,14 @@
                </span>
                 <div class="content-radio-pinyin">
                     <ul class="select_text_pinyin">
-                        <li v-for="(value, key) in questionData.answers" @click="changeAnswer(value)">
+                        <li v-for="(value, key) in questionData.answers">
                             <el-checkbox label="复选框 A"></el-checkbox>
                             <span>{{value.answerOption}}.</span>
                             <span v-for="(value, key) in value.answerContentPinyin" :key="key">
                             <ruby><rb>{{value.w}}</rb><rt>{{value.p}}</rt> </ruby>
                         </span>
                         </li>
+
                     </ul>
                 </div>
             </div>
@@ -49,19 +53,20 @@
             return {
                 dialogVisible: false,
                 questionData: {},
-                gradeNum: 0
+                gradeNum: 0,
+                checkList:[]
             }
         },
         methods: {
-            changeAnswer(answer) {
-                let question = this.questionData
-                this.$emit('closeDialog', answer, question)
+            changeAnswer() {
+                console.log(this.checkList)
+                this.$emit('closeDialog', {}, this.questionData,this.checkList)
                 this.dialogVisible = false
             }
         },
         mounted() {
             let _this = this
-            bus.$on('openDialog', function (obj) {
+            bus.$on('specialDialog', function (obj) {
                 _this.questionData = obj.question
                 _this.gradeNum = obj.videoGrade
                 _this.dialogVisible = true
@@ -69,7 +74,7 @@
             })
         },
         beforeDestroy() {
-            bus.$off('openDialog')
+            bus.$off('specialDialog')
         }
     }
 </script>
