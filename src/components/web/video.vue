@@ -5,7 +5,7 @@
             <span v-show="showTitle">{{orderNum}}：{{videoTitle}}</span>
         </div>
         <div class="video_content">
-            <video id="vid" crossorigin="*" :src="sourceSrc"  controls autoplay
+            <video id="vid" crossorigin="*" :src="sourceSrc" autoplay
                    width="64%"
                    @click="togglePlay" :poster="this.$myUrl.baseUrl() + poster ">
             </video>
