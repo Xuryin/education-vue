@@ -165,6 +165,7 @@
             padding: 0 0.2rem;
         }
         rt {
+            font-family: pinyinok;
             max-height: 1.2rem;
             height: 1.2rem;
         }
@@ -190,6 +191,7 @@
         }
 
         rt {
+            font-family: pinyinok;
             height: 1.2rem;
             padding-top: 0.2rem;
         }

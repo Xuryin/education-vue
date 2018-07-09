@@ -99,6 +99,7 @@
         }
 
         rt {
+            font-family: pinyinok;
             height: 1.5rem;
             padding-top: 0.2rem;
         }

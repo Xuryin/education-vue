@@ -2,6 +2,11 @@
     font-family: 'txjlzcyj';
     src: url('../fonts/txjlzcyj.ttf')
 }
+pinyinok
+@font-face {
+    font-family: '';
+    src: url('../fonts/PINYINOk.ttf')
+}
 
 html, body {
     height: 100%;

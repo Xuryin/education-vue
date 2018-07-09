@@ -5,10 +5,9 @@
             <div class="content" >
                 <span class="content-title">如果你是小玉，你该怎么回答</span>
                 <div class="content-radio">
-                    <div class="shop"></div>
-                    <div class="supermarket"></div>
-                    <div class="gameCenter"></div>
-                    <div class="snacks"></div>
+                    <div class="shop" @click="hidden('A')"></div>
+                    <div class="gameCenter" @click="hidden('C')"></div>
+                    <div class="snacks"  @click="hidden('D')"></div>
                 </div>
             </div>
         </div>

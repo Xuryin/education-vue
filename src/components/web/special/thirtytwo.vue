@@ -94,6 +94,9 @@
                 this.$httpWeb.fetch(url, p)
                     .then(res => {
                         this.questions = res.data.questions
+                        this.questions.forEach(function (obj) {
+                            if (obj.questionId==96) obj.isShow=true
+                        })
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
@@ -111,7 +114,7 @@
                 _this.questions.forEach(function (question) {
                     question.showTime < currentTime &&
                     (question.showTime + 1) > currentTime &&
-                    //question.isShow==true&&   //todo
+                    question.isShow==true&&   //todo
                     _this.openDialog(question)
                 })
             },
@@ -124,21 +127,14 @@
                 bus.$emit('openDialog', obj)
             },
             closeDialog(answer, question) {
-                if (question.crux == 1 && answer.crux == 1) {
-                    this.answers.push({
-                        questionId: question.questionId,
-                        option: answer.answerOption,
-                        answerId: answer.answerId
-                    })
-                    this.errorCount = 0
-                }
-                if (question.crux == 0) {
-                    this.answers.push({
-                        questionId: question.questionId,
-                        option: answer.answerOption,
-                        answerId: answer.answerId
-                    })
-                }
+                this.questions.forEach(function (obj) {
+                    if (obj.questionId==question.questionId) obj.isShow=false
+                })
+                this.answers.push({
+                    questionId: question.questionId,
+                    option: answer.answerOption,
+                    answerId: answer.answerId
+                })
                 this.checkAnswer(answer, question, this.videoGrade)
             },
             checkAnswer(answer, question, videoGrade) {
@@ -152,14 +148,15 @@
                             _this.video.currentTime=106.52
                             _this.video.play()
                         },1000)
-                    }else {
+                    }else if (answer.answerId==222) {
                         setTimeout(function () {
-                            _this.video.addEventListener(function () {
-                                if (this.currentTime>132&&this.currentTime<133){
+                            _this.video.addEventListener('timeupdate',function () {
+                                if (this.currentTime>131.48&&this.currentTime<132.48){
+                                    _this.video.pause()
                                     _this.failedCourse()
                                 }
                             })
-                            _this.video.currentTime=121.6
+                            _this.video.currentTime=120.64
                             _this.video.play()
                         },1000)
                     }
@@ -178,7 +175,7 @@
                 _this.showMsg = true
                 setTimeout(function () {
                     _this.showMsg = false
-                    _this.video.currentTime = answer.frameNext + 1
+                    _this.video.currentTime = 106.52
                     _this.video.play()
                 }, answer.feedbackDuration)
             },
@@ -233,6 +230,17 @@
                         console.log('err', err)
                     })
             },
+            intersect (arr1, arr2) {
+                let temp=false
+                arr1.forEach(function (obj1) {
+                    arr2.forEach(function (obj2) {
+                        if (obj2==obj1){
+                            temp=true
+                        }
+                    })
+                })
+                return temp
+            }
         },
         mounted() {
             let _this = this
@@ -257,25 +265,36 @@
             bus.$on('hidden', function (option) {
                 _this.showImgDialogMsg=false
                 switch (option){
-                    case 'A':
-                        _this.video.currentTime = 78.88
+                    case 'C':
+                        _this.video.currentTime = 78.92
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId==93) obj.isShow=true
+                        })
                         break
-                    case 'B':
+                    case 'A':
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId==94) obj.isShow=true
+                        })
                         _this.video.currentTime = 88.4
                         break
-                    case 'C':
-                        _this.video.currentTime = 97.4
-                        break
                     case 'D':
-                        _this.video.currentTime = 106.52
+                        _this.questions.forEach(function (obj) {
+                            if (obj.questionId==95) obj.isShow=true
+                        })
+                        _this.video.currentTime = 97.4
                         break
                 }
                 _this.video.play()
             })
-            bus.$on('foodSelected', function (option) {
+            bus.$on('foodSelected', function (list) {
                 _this.showFoodDialogMsg=false
                 //todo 判断是否包含零食
-                _this.video.play()
+                if (!_this.intersect(list,[1,3,4,5,6,8])){
+                    _this.video.currentTime = 132.52
+                }else {
+                    _this.video.currentTime = 110.92
+                }
+               _this.video.play()
             })
         },
         beforeCreate() {

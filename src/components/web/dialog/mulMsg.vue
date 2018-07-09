@@ -165,6 +165,7 @@
             padding: 0 0.2rem;
         }
         rt {
+            font-family: pinyinok;
             min-height: 1.2rem;
         }
     }
