@@ -3,16 +3,15 @@
         <div class="shadow"></div>
         <div class="content_border">
             <div class="content">
-                <span class="content-title">如果你是小玉，你该怎么回答</span>
+                <div class="content-title">如果你是小玉，你该怎么回答</div>
                 <span class="content_mention">最多可选择三样</span>
                 <div class="content-radio">
-
                     <div :class="'snacks_' + item" @click="hidden(item)" v-for="item in 9">
                         <img src="~static/imgs/video_sock_choose.png" alt="" v-show="contain(checkList, item)">
                     </div>
                 </div>
 
-                <div>
+                <div class="settle">
                     <button @click="commit()">结账</button>
                 </div>
             </div>
@@ -32,41 +31,44 @@
         },
         methods: {
             hidden(option) {
-
-                if (this.checkList.length > 2) {
-                    //this.$toast('只能选择三个哦')
-                    alert('只能选择三个哦')
-                }else{
-                    if (this.contain(this.checkList,option)) {
-                        this.checkList.remove(option)
-                    }else {
+                if (this.contain(this.checkList, option)) {
+                    this.checkList.remove(option)
+                } else {
+                    if (this.checkList.length > 2) {
+                        this.$alert('只能选择三个哦', {
+                            confirmButtonText: '确定',
+                            center:true,
+                            callback: action => {
+                            }
+                        });
+                    } else {
                         this.checkList.push(option)
                     }
-
                 }
+
                 //bus.$emit('hidden', option);
             },
-            commit(){
+            commit() {
                 bus.$emit('foodSelected', this.checkList);
             },
-            contain (arr, item) {
-                let temp=false
+            contain(arr, item) {
+                let temp = false
                 arr.forEach(function (obj) {
                     if (obj == item) {
-                        temp=true
+                        temp = true
                     }
                 })
                 return temp
             }
         },
         mounted() {
-            Array.prototype.indexOf = function(val) {
+            Array.prototype.indexOf = function (val) {
                 for (var i = 0; i < this.length; i++) {
                     if (this[i] == val) return i;
                 }
                 return -1;
             }
-            Array.prototype.remove = function(val) {
+            Array.prototype.remove = function (val) {
                 var index = this.indexOf(val);
                 if (index > -1) {
                     this.splice(index, 1);
@@ -97,22 +99,21 @@
 
     .content-title {
         font-size: 1.5rem;
-        text-align: center;
+        text-align: center !important;
         line-height: 2.5rem;
-        padding: 1.2rem 2rem;
+        padding: 1rem 2rem;
         color: #ffffff;
         border-radius: 10px 10px 0 0;
         background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
-        display: flex;
-        flex-wrap: wrap;
-        letter-spacing: 0.15rem;
+        display: block;
+        letter-spacing: 0.1rem;
         word-wrap: break-word;
     }
 
     .content_mention {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         color: #333333;
-        margin-left: 23px;
+        margin-left: 20px;
         line-height: 2.5rem;
     }
 
@@ -131,13 +132,13 @@
 
     .content {
         border-radius: 10px;
-        width: 460px;
+        width: 540px;
         background-color: @fff;
     }
 
     .content-radio {
-        width: 100%;
         height: 240px;
+        margin: 0 25px;
         background-image: url("../../../../static/imgs/pic_sock.png");
         background-repeat: no-repeat;
         background-position: 0 0;
@@ -215,9 +216,21 @@
             bottom: 0;
             right: 0;
         }
+    }
 
-        .checked {
-
+    .settle {
+        display: flex;
+        justify-content: center;
+        margin: 20px 0;
+        button {
+            width: 220px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: #FF7E00;
+            color: #fff;
+            font-size: 2rem;
+            line-height: 50px;
+            border: none;
         }
     }
 </style>

@@ -90,6 +90,15 @@ let router = [
                     keepAlive: false
                 }
             },
+            {
+                path: '/seventyfive',
+                component: resolve =>
+                    require(["@/components/web/special/seventyfive"], resolve),
+                name: 'seventyfive',
+                meta: {
+                    keepAlive: false
+                }
+            },
         ]
     }
 ]

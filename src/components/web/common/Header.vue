@@ -7,8 +7,9 @@
             </div>
             <div class="right_sec">
                 <div @mouseout="dialog = false" @mouseover="dialog = true">
-                    <img src="~static/imgs/user_boy.png" alt="头像" v-if="userData.gender == 1"  @click.stop="showDialog">
-                    <img src="~static/imgs/user_girl.png" alt="头像" v-if="userData.gender == 0"  @click.stop="showDialog">
+                    <img src="~static/imgs/user_boy.png" alt="头像" v-if="userData.gender == 1 && !userData.headImg"  @click.stop="showDialog">
+                    <img src="~static/imgs/user_girl.png" alt="头像" v-if="userData.gender == 0 && !userData.headImg"  @click.stop="showDialog">
+                    <img :src="$myUrl.baseUrl() + userData.headImg" alt="头像" v-if="userData.headImg"  @click.stop="showDialog">
                     <span  @click.stop="showDialog">你好，{{userData.name}}</span>
                     <img src="~static/imgs/index_arrow.png" alt="down" v-if="!dialogFlag">
                     <img src="~static/imgs/index_arrow_up.png" alt="down" v-else>
@@ -18,7 +19,7 @@
                             <img src="~static/imgs/user_boy.png" alt="头像" v-if="userData.gender == 1"  width="88px" height="88">
                             <img src="~static/imgs/user_girl.png" alt="头像" v-if="userData.gender == 0"  width="88px" height="88">
                             <ul>
-                                <li>{{userData.userName}}</li>
+                                <li>{{userData.name}}</li>
                                 <li>积分:  {{userData.coin}}</li>
                             </ul>
                         </div>
@@ -77,6 +78,11 @@
                 p.studentId = studentId
                 this.$httpWeb.fetch(url, p).then(res => {
                     _this.userData = res.data
+                    if (_this.userData.nickName != "" || !_this.userData.nickName) {
+                        _this.userData.name = _this.userData.nickName
+                    } else {
+                        _this.userData.name = _this.userData.name
+                    }
                 }).catch(err => {
                     console.log(err)
                 })

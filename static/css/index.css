@@ -449,3 +449,7 @@ button:focus {
     outline: none;
 }
 
+.el-message-box--center .el-message-box__content {
+    font-size: 1.5rem!important;
+}
+

@@ -16,15 +16,18 @@
         <v-selectmsg :msg="msg" v-if="showMsg"></v-selectmsg>
 
         <v-finished :finishedMsg="finishedMsg" v-if="showfinishedMsg" @closeDialog="closeDialog"></v-finished>
+
+        <v-island></v-island>
     </div>
 </template>
 
 <script>
-    import vMsg from './dialog/msg'
-    import vSelectmsg from './dialog/selectMsg'
-    import {bus} from '../../tools/bus'
-    import vFinished from './dialog/finishedDialog'
-    import {selectMsgDIalog, revertNumber, getItem} from '../../tools/common'
+    import vMsg from '../dialog/msg'
+    import vSelectmsg from '../dialog/selectMsg'
+    import {bus} from '../../../tools/bus'
+    import vFinished from '../dialog/finishedDialog'
+    import vIsland from '../dialog/islandDialog'
+    import {selectMsgDIalog, revertNumber, getItem} from '../../../tools/common'
 
     export default {
         inject: ['reload'],
@@ -53,7 +56,8 @@
                 videoGrade: '',
                 videoStatus: false,
                 showTitle: false,
-                poster: ''
+                poster: '',
+                showIsland: false
             }
         },
         computed: {},
@@ -82,12 +86,13 @@
                 p.courseId = this.courseId;
                 this.$httpWeb.fetch(url, p)
                     .then(res => {
-                        this.poster = this.$myUrl.baseUrl()+res.data.poster
-                        console.log(this.poster)
+                        //this.poster = this.$myUrl.baseUrl()+res.data.poster
+                        //console.log(this.poster)
                         this.questions = res.data.questions
                         this.questions.forEach(function (obj) {
                             obj.isShow = true
                         })
+                        console.log(this.questions)
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
@@ -114,7 +119,11 @@
                     question: question,
                     videoGrade: this.videoGrade
                 }
-                bus.$emit('openDialog', obj)
+                if (question.questionId==223){
+                    bus.$emit('openIslandDialog', obj)
+                } else {
+                    bus.$emit('openDialog', obj)
+                }
             },
             closeDialog(answer, question) {
                 if (question.questionId==147){
@@ -199,29 +208,34 @@
                 }, answer.feedbackDuration)
             },
             natural(answer, question) {
-                let _this = this
-                if (answer.crux == 0 && question.crux == 1) {
-                    if (_this.errorCount < 3) {
-                        _this.errorCount++
-                        _this.openDialog(question)
-                    } else {
-                        //视频播放结束，弹出游戏失败等信息
-                        _this.answers.push({
-                            questionId: question.questionId,
-                            option: answer.answerOption,
-                            answerId: answer.answerId
-                        })
-                        this.questions.forEach(function (obj) {
-                            if (obj.questionId == question.questionId) {
-                                obj.isShow = false
-                            }
-                        })
-                        _this.failedCourse()
-                    }
-                } else {
-                    _this.video.currentTime = _this.video.currentTime
-                    _this.video.play()
+                if (answer.feedbackDuration == null || answer.feedbackDuration == '' || answer.feedbackDuration == undefined) {
+                    answer.feedbackDuration = 3000
                 }
+                let _this = this
+                setTimeout(function () {
+                    if (answer.crux == 0 && question.crux == 1) {
+                        if (_this.errorCount < 3) {
+                            _this.errorCount++
+                            _this.openDialog(question)
+                        } else {
+                            //视频播放结束，弹出游戏失败等信息
+                            _this.answers.push({
+                                questionId: question.questionId,
+                                option: answer.answerOption,
+                                answerId: answer.answerId
+                            })
+                            this.questions.forEach(function (obj) {
+                                if (obj.questionId == question.questionId) {
+                                    obj.isShow = false
+                                }
+                            })
+                            _this.failedCourse()
+                        }
+                    } else {
+                        _this.video.currentTime = _this.video.currentTime
+                        _this.video.play()
+                    }
+                }, answer.feedbackDuration)
             },
             feedBackAndJump(answer, question, videoGrade) {
                 if (answer.feedbackDuration == null || answer.feedbackDuration == '' || answer.feedbackDuration == undefined) {
@@ -431,7 +445,7 @@
             this.video.src = null
         },
         components: {
-            vMsg, vSelectmsg, vFinished
+            vMsg, vSelectmsg, vFinished, vIsland
         },
     }
 </script>

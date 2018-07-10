@@ -2,9 +2,11 @@
     <div class="details_page">
         <div class="details_title">
             <div>课程目录</div>
-            <ul >
+            <ul>
                 <li v-for="(value, key) in listMyCourse.grades" :key="key" @click="checkGrade(value)"
-                    v-bind:class="{greyBg:value.usable==0,blueBg:value.usable==1, yellowBg: gradeChecked == value.gradeNum}">{{value.gradeName}}</li>
+                    v-bind:class="{greyBg:value.usable==0,blueBg:value.usable==1, yellowBg: gradeChecked == value.gradeNum}">
+                    {{value.gradeName}}
+                </li>
             </ul>
             <div @click="$router.push({name: 'webHome'})">
                 <span>返回首页</span>
@@ -34,6 +36,7 @@
     import {bus} from '../../../tools/bus'
     import {getItem, setItem} from '../../../tools/common'
     import vFoot from '../common/Footer.vue'
+
     export default {
         inject: ['reload'],
         data() {
@@ -63,14 +66,14 @@
                     poster: "https://surmon-china.github.io/vue-quill-editor/static/images/surmon-1.jpg"
                 },
                 userData: {},
-                listMyCourse:{},
+                listMyCourse: {},
                 videoList: [],
                 gradeChecked: 0,
                 title: '交互式课程'
             }
         },
         methods: {
-            checkGrade (value) {
+            checkGrade(value) {
                 if (value.usable == 0) {
                     return false
                 } else {
@@ -82,41 +85,42 @@
                     setItem('currentGrade', this.gradeChecked)
                 }
             },
-            courseList(p){
+            courseList(p) {
                 let url = '/course/listMyCourse';
-                this.$httpWeb.fetch(url,p)
-                    .then(res=>{
+                this.$httpWeb.fetch(url, p)
+                    .then(res => {
                         this.listMyCourse = res.data
                     })
-                    .catch(err=>{
-                        console.log('err',err)
+                    .catch(err => {
+                        console.log('err', err)
                     })
             },
-            getInfo(){
+            getInfo() {
                 this.userData = getItem('studentInfo')
                 this.gradeChecked = this.userData.gradeNum
             },
-            playVideo(courseId, imgUrl){
+            playVideo(courseId, imgUrl) {
                 let videoUrl = '/course/detail';
                 let p = {};
                 let _this = this
                 let studentId = _this.userData.studentId
                 p.courseId = courseId;
-                if (courseId===25){
-                    this.$router.push({name: 'twentyFif', query: {courseId:courseId, poster: imgUrl}})
-                } else if (courseId===27){
-                    this.$router.push({name: 'twentyseven', query: {courseId:courseId, poster: imgUrl}})
-                }else if (courseId===28){
-                    this.$router.push({name: 'twentyeight', query: {courseId:courseId, poster: imgUrl}})
-                }else if (courseId===29){
-                    this.$router.push({name: 'twentynine', query: {courseId:courseId, poster: imgUrl}})
-                }else if (courseId===31){
-                    this.$router.push({name: 'thirtyone', query: {courseId:courseId, poster: imgUrl}})
-                }else if (courseId===32){
-                    this.$router.push({name: 'thirtytwo', query: {courseId:courseId, poster: imgUrl}})
-                }
-                else {
-                    this.$router.push({name: 'video', query: {courseId:courseId, poster: imgUrl}})
+                if (courseId === 25) {
+                    this.$router.push({name: 'twentyFif', query: {courseId: courseId}})
+                } else if (courseId === 27) {
+                    this.$router.push({name: 'twentyseven', query: {courseId: courseId}})
+                } else if (courseId === 28) {
+                    this.$router.push({name: 'twentyeight', query: {courseId: courseId}})
+                } else if (courseId === 29) {
+                    this.$router.push({name: 'twentynine', query: {courseId: courseId}})
+                } else if (courseId === 31) {
+                    this.$router.push({name: 'thirtyone', query: {courseId: courseId}})
+                } else if (courseId === 32) {
+                    this.$router.push({name: 'thirtytwo', query: {courseId: courseId}})
+                } else if (courseId === 75) {
+                    this.$router.push({name: 'seventyfive', query: {courseId: courseId}})
+                } else {
+                    this.$router.push({name: 'video', query: {courseId: courseId}})
                 }
             }
         },
@@ -147,6 +151,7 @@
 
 <style scoped lang="less">
     @import "~static/less/reset.less";
+
     .details_title {
         width: 75%;
         margin-left: 12.5%;
