@@ -88,6 +88,7 @@
                         this.questions.forEach(function (obj) {
                             obj.isShow = true
                         })
+                        console.log(res.data)
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
@@ -102,19 +103,22 @@
             showQuestion(currentTime) {
                 let _this = this
                 _this.questions.forEach(function (question) {
-                    question.showTime < currentTime &&
-                    (question.showTime + 1) > currentTime &&
+                    question.showTime > currentTime &&
+                    (question.showTime -1) < currentTime &&
                     question.isShow == true &&   //todo
                     _this.openDialog(question)
                 })
             },
             openDialog(question) {
-                this.video.pause()
                 let obj = {
                     question: question,
                     videoGrade: this.videoGrade
                 }
-                bus.$emit('openDialog', obj)
+                let _this = this
+                setTimeout(function () {
+                    _this.video.pause()
+                    bus.$emit('openDialog', obj)
+                },(question.showTime-_this.video.currentTime)*1000)
             },
             closeDialog(answer, question) {
                 if (question.questionId==147){
@@ -416,8 +420,24 @@
                     _this.reload()
                 }
                 if (action == 'next') {
-                    _this.$router.push({name: 'video', query: {courseId: _this.nextCourseId}})
-                    _this.reload()
+                    if (_this.nextCourseId === 25) {
+                        _this.$router.push({name: 'twentyFif', query: {courseId: 25}})
+                    } else if (_this.nextCourseId === 27) {
+                        _this.$router.push({name: 'twentyseven', query: {courseId: 27}})
+                    } else if (_this.nextCourseId === 28) {
+                        _this.$router.push({name: 'twentyeight', query: {courseId: 28}})
+                    } else if (_this.nextCourseId === 29) {
+                        _this.$router.push({name: 'twentynine', query: {courseId: 29}})
+                    } else if (_this.nextCourseId === 31) {
+                        _this.$router.push({name: 'thirtyone', query: {courseId: 31}})
+                    } else if (_this.nextCourseId === 32) {
+                        _this.$router.push({name: 'thirtytwo', query: {courseId: 32}})
+                    } else if (_this.nextCourseId === 75) {
+                        _this.$router.push({name: 'seventyfive', query: {courseId: 75}})
+                    } else {
+                        _this.$router.push({name: 'video', query: {courseId: _this.nextCourseId}})
+                        _this.reload()
+                    }
                 }
             })
         },

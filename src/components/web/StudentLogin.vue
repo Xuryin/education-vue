@@ -1,13 +1,13 @@
 <template>
     <div class="this_page">
-        <video id="vid" crossorigin="*" src="~static/loginVideo.mp4" autoplay
-               :width="videoWidth" height="100%" class="login_video" v-show="!showLogin">
+        <video id="vid" crossorigin="*" :src="src" muted="muted"
+               :width="videoWidth" height="100%" class="login_video"
+               v-show="!showLogin">
         </video>
         <div class="login_page" @keyup.enter="login" v-show="showLogin">
             <div class="login_title">
                 <span>心灵广雅</span>
             </div>
-
             <div class="login_form">
                 <label for="num">
                     <img src="~static/imgs/login_user.png" alt="">
@@ -33,7 +33,10 @@
                 password: '',
                 video: document.getElementById('vid'),
                 showLogin: false,
-                videoWidth: ''
+                videoWidth: '',
+                src: '../../../../static/loginVideo.webm',
+                showPage: false,
+                state: null
             }
         },
         methods: {
@@ -60,7 +63,15 @@
         },
         mounted() {
             let _this = this
-            _this.video = document.getElementById('vid')
+            this.video = document.getElementById('vid')
+            this.video.oncanplaythrough = function () {
+                console.log(123)
+                _this.video.play()
+                _this.video.onclick = function () {
+                    _this.video.muted = false
+                }
+            }
+            this.state = _this.video.readyState
             this.video.onended = function () {
                 _this.showLogin = true
                 _this.$nextTick(function () {
@@ -68,8 +79,14 @@
                 })
             }
         },
-        created () {
+        created() {
             this.videoWidth = document.body.clientWidth
+            this.src = '../../../../static/loginVideo.webm'
+        },
+        watch: {
+            state(newVal, oldVal) {
+                console.log(newVal)
+            }
         }
     }
 </script>
@@ -113,7 +130,7 @@
         font-size: 1.5rem;
     }
 
-    #vid{
+    #vid {
         object-fit: cover;
         object-position: center center;
     }

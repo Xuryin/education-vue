@@ -20,6 +20,31 @@
         <v-finished :finishedMsg="finishedMsg" v-if="showfinishedMsg" @closeDialog="closeDialog"></v-finished>
         <v-imgDialogMsg v-if="showImgDialogMsg"></v-imgDialogMsg>
         <v-foodDialogMsg v-if="showFoodDialogMsg"></v-foodDialogMsg>
+
+        <div class="thisPage" v-if="mulQuestionShow">
+            <div class="shadow"></div>
+            <div class="content_border">
+                <div class="content">
+                    <span
+                        class="content-title">如果今天回家后你有2个小时完成自己的家庭作业，任务包括1篇日记，10个单词的背诵和5道应用题，你还想看一会儿动画片，你会怎么安排自己的时间呢？</span>
+                    <div class="content-radio">
+                        <div v-for="(value, key) in mulQuestion" :key="key" class="content_answer">
+                            <span class="content_question_title">{{value.question}}</span>
+                            <div class="content_answer_options">
+                                <span v-for="(item, num) in value.answers" :key="num"
+                                      @click="selectAnswer(key, item)"
+                                      :class="{fontBlue: selectNum[key]['q' + (key + 1)] == item.count}">
+                               {{item.count}}.{{item.content}}
+                           </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="question_confirm_button">
+                        <button @click="selectMulConfirm">选好了</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -31,6 +56,7 @@
     import vImgDialogMsg from '../dialog/imgDialogMsg'
     import vFoodDialogMsg from '../dialog/foodDialogMsg'
     import {selectMsgDIalog, revertNumber, getItem} from '../../../tools/common'
+    import {Notification} from 'element-ui'
 
     export default {
         inject: ['reload'],
@@ -63,7 +89,100 @@
                 orderNum: 0,
                 videoGrade: '',
                 videoStatus: false,
-                showTitle: false
+                showTitle: false,
+                mulQuestionShow: false,
+                mulQuestion: [
+                    {
+                        question: '1.你的零花钱主要花在哪里？',
+                        answers: [
+                            {
+                                count: 'A',
+                                content: '学习用品'
+                            },
+                            {
+                                count: 'B',
+                                content: '零食'
+                            },
+                            {
+                                count: 'C',
+                                content: '休闲娱乐'
+                            },
+                            {
+                                count: 'D',
+                                content: '其他'
+                            }
+                        ]
+                    },
+                    {
+                        question: '2.你的零花钱是否有记账？',
+                        answers: [
+                            {
+                                count: 'A',
+                                content: '有'
+                            },
+                            {
+                                count: 'B',
+                                content: '没有'
+                            },
+                            {
+                                count: 'C',
+                                content: '偶尔有'
+                            }
+                        ]
+                    },
+                    {
+                        question: '3.你认为记账有必要吗？',
+                        answers: [
+                            {
+                                count: 'A',
+                                content: '有必要'
+                            },
+                            {
+                                count: 'B',
+                                content: '没必要'
+                            },
+                            {
+                                count: 'C',
+                                content: '无所谓'
+                            }
+                        ]
+                    },
+                    {
+                        question: '4.如果父母忘记给你零花钱，你会？',
+                        answers: [
+                            {
+                                count: 'A',
+                                content: '大发脾气'
+                            },
+                            {
+                                count: 'B',
+                                content: '心平气和地向父母索要'
+                            },
+                            {
+                                count: 'C',
+                                content: '不消费'
+                            },
+                            {
+                                count: 'D',
+                                content: '其他'
+                            }
+                        ]
+                    }
+                ],
+                selectNum: [
+                    {
+                        q1: 'E'
+                    },
+                    {
+                        q2: 'E'
+                    },
+                    {
+                        q3: 'E'
+                    },
+                    {
+                        q4: 'E'
+                    }
+                ]
             }
         },
         computed: {},
@@ -112,19 +231,22 @@
             showQuestion(currentTime) {
                 let _this = this
                 _this.questions.forEach(function (question) {
-                    question.showTime < currentTime &&
-                    (question.showTime + 1) > currentTime &&
+                    question.showTime > currentTime &&
+                    (question.showTime -1) < currentTime &&
                     question.isShow==true&&   //todo
                     _this.openDialog(question)
                 })
             },
             openDialog(question) {
-                this.video.pause()
+                let _this = this
                 let obj = {
                     question: question,
                     videoGrade: this.videoGrade
                 }
-                bus.$emit('openDialog', obj)
+                setTimeout(function () {
+                    bus.$emit('openDialog', obj)
+                    _this.video.pause()
+                },(question.showTime-currentTime)*1000)
             },
             closeDialog(answer, question) {
                 this.questions.forEach(function (obj) {
@@ -240,6 +362,23 @@
                     })
                 })
                 return temp
+            },
+            selectAnswer(num, item) {
+                this.selectNum[num]['q' + (num + 1)] = item.count
+            },
+            selectMulConfirm () {
+                console.log(this.selectNum)
+                let an = JSON.stringify(this.selectNum)
+                if (an.indexOf('E') > -1) {
+                    Notification({
+                        message: '你还没有选择完毕哦',
+                        type: 'error'
+                    });
+                } else {
+                   this.answers.extend = an
+                    this.mulQuestionShow = false
+                    this.endCourse()
+                }
             }
         },
         mounted() {
@@ -247,18 +386,22 @@
             _this.video = document.getElementById('vid')
             _this.video.ontimeupdate = function () {
                 let currentTime = this.currentTime
-                if (currentTime>77.88&&currentTime<78.88) {
-                    _this.showImgDialogMsg = true
-                    _this.video.pause()
+                if (currentTime>76.88&&currentTime<77.88) {
+                    setTimeout(function () {
+                        _this.showImgDialogMsg = true
+                        _this.video.pause()
+                    },(77.88-currentTime)*1000)
                 }
-                if (currentTime>107.52&&currentTime<108.52) {
-                    _this.showFoodDialogMsg= true
-                    _this.video.pause()
+                if (currentTime>105.52&&currentTime<106.52) {
+                    setTimeout(function () {
+                        _this.showImgDialogMsg = true
+                        _this.video.pause()
+                    },(106.52-currentTime)*1000)
                 }
                 _this.showQuestion(currentTime)
             }
             _this.video.onended = function () {
-                _this.endCourse()
+                _this.mulQuestionShow = true
             }
             _this.startCourse()
             bus.$emit('sendTitle', _this.title)
@@ -314,5 +457,94 @@
 <style lang="less">
     @import "~static/less/reset.less";
     @import "~static/less/video.less";
+    .thisPage {
+        height: 100%;
+    }
+
+    .shadow {
+        height: 100%;
+        opacity: 0.4;
+        background-color: #333333;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .content-title {
+        font-size: 1.5rem;
+        line-height: 2rem;
+        padding: 1.5rem 2rem;
+        color: #ffffff;
+        border-radius: 10px 10px 0 0;
+        background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
+        display: flex;
+        flex-wrap: wrap;
+        letter-spacing: 0.15rem;
+        span {
+            padding: 0 0.2rem;
+
+        }
+    }
+
+    .content-title_question {
+        vertical-align: text-bottom;
+    }
+
+    .content_border {
+        width: 100%;
+        min-width: 1280px;
+        position: absolute;
+        bottom: 8%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .content {
+        border-radius: 10px;
+        text-align: left;
+        max-width: 40rem;
+        min-width: 20rem;
+        background-color: @fff;
+
+    }
+
+    .content_answer {
+        padding: 0 1.5rem;
+        .content_question_title {
+            display: block;
+            height: 3rem;
+            line-height: 3rem;
+            font-size: 1.5rem;
+        }
+    }
+
+    .content_answer_options {
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        span {
+            display: block;
+            padding: 0 1.5rem;
+            font-size: 1.2rem;
+            line-height: 2.5rem;
+            min-width: 25%;
+        }
+    }
+
+    .question_confirm_button {
+        text-align: center;
+        padding: 1rem 0;
+        button {
+            height: 3rem;
+            width: 8rem;
+            background-color: #1d71f2;
+            color: white;
+            font-size: 1.5rem;
+            line-height: 2.5rem;
+            border: none;
+            border-radius: 10px;
+        }
+    }
+
 
 </style>
