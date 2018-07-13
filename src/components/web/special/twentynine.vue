@@ -46,7 +46,7 @@
                     },
                     {
                         id: 2,
-                        showTime: 19.12,
+                        showTime: 19.06,
                         content: [
                             '（主角）：雅雅早上好！'
                         ],
@@ -105,7 +105,7 @@
             getInfo() {
                 let userData = getItem('studentInfo')
                 this.studentId = userData.studentId
-                this.studentName = userData.studentName
+                this.studentName = userData.name
             },
             detail() {
                 let url = '/course/detail';
@@ -116,6 +116,7 @@
                         this.questions = res.data.questions
                         this.questions.forEach(function (obj) {
                             obj.isShow = true
+                            //if (obj.questionId==86) obj.showTime=193.52
                         })
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
@@ -232,30 +233,28 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                setTimeout(function () {
-                    if (answer.crux == 0 && question.crux == 1) {
-                        if (_this.errorCount < 3) {
-                            _this.errorCount++
-                            _this.openDialog(question)
-                        } else {
-                            //视频播放结束，弹出游戏失败等信息
-                            _this.answers.push({
-                                questionId: question.questionId,
-                                option: answer.answerOption,
-                                answerId: answer.answerId
-                            })
-                            this.questions.forEach(function (obj) {
-                                if (obj.questionId == question.questionId) {
-                                    obj.isShow = false
-                                }
-                            })
-                            _this.failedCourse()
-                        }
+                if (answer.crux == 0 && question.crux == 1) {
+                    if (_this.errorCount < 3) {
+                        _this.errorCount++
+                        _this.openDialog(question)
                     } else {
-                        _this.video.currentTime = _this.video.currentTime
-                        _this.video.play()
+                        //视频播放结束，弹出游戏失败等信息
+                        _this.answers.push({
+                            questionId: question.questionId,
+                            option: answer.answerOption,
+                            answerId: answer.answerId
+                        })
+                        this.questions.forEach(function (obj) {
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = false
+                            }
+                        })
+                        _this.failedCourse()
                     }
-                }, answer.feedbackDuration)
+                } else {
+                    _this.video.currentTime = _this.video.currentTime
+                    _this.video.play()
+                }
             },
             feedBackAndJump(answer, question, videoGrade) {
                 if (answer.feedbackDuration == null || answer.feedbackDuration == '' || answer.feedbackDuration == undefined) {
@@ -281,8 +280,12 @@
                                 })
                             }, 2000)
                             _this.video.addEventListener('timeupdate', function () {
-                                if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
-                                    if (question.isShow === true) _this.openDialog(question)
+                                if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                                    if (question.isShow === true){
+                                        setTimeout(function () {
+                                            _this.openDialog(question)
+                                        },(answer.frameEnd-_this.video.currentTime)*1000)
+                                    }
                                 }
                             })
                             _this.video.currentTime = answer.frameStart
@@ -311,10 +314,12 @@
                         })
                         _this.video.addEventListener('timeupdate', function () {
                             if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-                                if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
-                                    answer.frameNext += 1
-                                }
-                                _this.video.currentTime = answer.frameNext
+                                // if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                                //     answer.frameNext += 1
+                                // }
+                                setTimeout(function () {
+                                    _this.video.currentTime = answer.frameNext
+                                },(answer.frameEnd-_this.video.currentTime)*1000)
                             }
                         })
                         _this.video.currentTime = answer.frameStart
@@ -339,11 +344,14 @@
                     if (_this.errorCount < 3) {
                         _this.errorCount++
                         _this.video.addEventListener('timeupdate', function () {
-                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-                                if (question.isShow===true) _this.openDialog(question)
+                            if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                                if (question.isShow === true){
+                                    setTimeout(function () {
+                                        _this.openDialog(question)
+                                    },(answer.frameEnd-_this.video.currentTime)*1000)
+                                }
                             }
                         })
-                        console.log(answer.frameStart)
                         _this.video.currentTime = answer.frameStart
                         _this.video.play()
                     } else {
@@ -370,10 +378,12 @@
                     })
                     _this.video.addEventListener('timeupdate', function () {
                         if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
-                            if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
-                                answer.frameNext += 1
-                            }
-                            _this.video.currentTime = answer.frameNext
+                            // if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                            //     answer.frameNext += 1
+                            // }
+                            setTimeout(function () {
+                                _this.video.currentTime = answer.frameNext
+                            },(answer.frameEnd-_this.video.currentTime)*1000)
                         }
                     })
                     _this.video.currentTime = answer.frameStart

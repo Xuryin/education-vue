@@ -251,8 +251,12 @@
                                 })
                             }, 2000)
                             _this.video.addEventListener('timeupdate', function () {
-                                if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
-                                    if (question.isShow === true) _this.openDialog(question)
+                                if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                                    if (question.isShow === true){
+                                        setTimeout(function () {
+                                            _this.openDialog(question)
+                                        },(answer.frameEnd-_this.video.currentTime)*1000)
+                                    }
                                 }
                             })
                             _this.video.currentTime = answer.frameStart
@@ -280,11 +284,14 @@
                             }
                         })
                         _this.video.addEventListener('timeupdate', function () {
-                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-                                if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
-                                    answer.frameNext += 1
-                                }
-                                _this.video.currentTime = answer.frameNext
+                            if (_this.video.currentTime < answer.frameEnd && (_this.video.currentTime > answer.frameEnd - 1)) {
+                                // if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                                //     answer.frameNext += 1
+                                // }
+                                setTimeout(function () {
+                                    _this.video.currentTime = answer.frameNext
+                                },(answer.frameEnd-_this.video.currentTime)*1000)
+
                             }
                         })
                         _this.video.currentTime = answer.frameStart
@@ -309,11 +316,14 @@
                     if (_this.errorCount < 3) {
                         _this.errorCount++
                         _this.video.addEventListener('timeupdate', function () {
-                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-                                if (question.isShow===true) _this.openDialog(question)
+                            if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                                if (question.isShow === true){
+                                    setTimeout(function () {
+                                        _this.openDialog(question)
+                                    },(answer.frameEnd-_this.video.currentTime)*1000)
+                                }
                             }
                         })
-                        console.log(answer.frameStart)
                         _this.video.currentTime = answer.frameStart
                         _this.video.play()
                     } else {
@@ -339,11 +349,13 @@
                         }
                     })
                     _this.video.addEventListener('timeupdate', function () {
-                        if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
+                        if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
                             if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
                                 answer.frameNext += 1
                             }
-                            _this.video.currentTime = answer.frameNext
+                            setTimeout(function () {
+                                _this.video.currentTime = answer.frameNext
+                            },(answer.frameEnd-_this.video.currentTime)*1000)
                         }
                     })
                     _this.video.currentTime = answer.frameStart
@@ -434,6 +446,12 @@
                         _this.$router.push({name: 'thirtytwo', query: {courseId: 32}})
                     } else if (_this.nextCourseId === 75) {
                         _this.$router.push({name: 'seventyfive', query: {courseId: 75}})
+                    } else if (_this.nextCourseId === 68) {
+                        _this.$router.push({name: 'sixtyegiht', query: {courseId: 68}})
+                    } else if (_this.nextCourseId === 69) {
+                        _this.$router.push({name: 'sixtynine', query: {courseId: 69}})
+                    } else if (_this.nextCourseId === 70) {
+                        _this.$router.push({name: 'seventy', query: {courseId: 70}})
                     } else {
                         _this.$router.push({name: 'video', query: {courseId: _this.nextCourseId}})
                         _this.reload()

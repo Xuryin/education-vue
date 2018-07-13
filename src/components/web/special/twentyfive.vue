@@ -66,7 +66,7 @@
                     },
                     {
                         id: 6,
-                        showTime: 159,
+                        showTime: 160,
                         content: [
                             '接下来几天你和小星都在冷战。'
                         ],
@@ -199,10 +199,13 @@
                         question.answers[2].feedback = _this.studentName+'：“小星，我也有要跟你道歉的地方，前天你心情不好，我不应该跟你争吵，我也应该更宽容一点，谢谢你买的新文具盒！”'
                         question.answers[2].type = 2
                         _this.video.addEventListener('timeupdate',function () {
+                            _this.dialog[3].showed = 1
                             let current = this.currentTime
                             if (current>157&&current<158){
-                                _this.video.pause()
-                                _this.endCourse()
+                                setTimeout(function () {
+                                    _this.video.pause()
+                                    _this.endCourse()
+                                },(158-_this.video.currentTime)*1000)
                             }
                         })
                 }
@@ -351,14 +354,16 @@
 
                     }
                     _this.video.addEventListener('timeupdate', function () {
-                        if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
+                        if (_this.video.currentTime <answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                            setTimeout(function () {
+                                if (question.crux == 1 && answer.crux == 0) {
+                                    _this.openDialog(question)
+                                } else {
+                                    _this.video.currentTime = answer.frameNext ? answer.frameNext : _this.video.currentTime
+                                    _this.video.play()
+                                }
+                            },(answer.frameEnd-_this.video.currentTime)*1000)
 
-                            if (question.crux == 1 && answer.crux == 0) {
-                                _this.openDialog(question)
-                            } else {
-                                _this.video.currentTime = answer.frameNext ? answer.frameNext : _this.video.currentTime
-                                _this.video.play()
-                            }
                         }
                     })
                     _this.video.currentTime = answer.frameStart
@@ -382,14 +387,15 @@
                     }
                 }
                 _this.video.addEventListener('timeupdate', function () {
-                    if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-
-                        if (question.crux == 1 && answer.crux == 0) {
-                            _this.openDialog(question)
-                        } else {
-                            _this.video.currentTime = answer.frameNext ? answer.frameNext : _this.video.currentTime
-                            _this.video.play()
-                        }
+                    if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                        setTimeout(function () {
+                            if (question.crux == 1 && answer.crux == 0) {
+                                _this.openDialog(question)
+                            } else {
+                                _this.video.currentTime = answer.frameNext ? answer.frameNext : _this.video.currentTime
+                                _this.video.play()
+                            }
+                        },(answer.frameEnd-_this.video.currentTime)*1000)
                     }
                 })
                 _this.video.currentTime = answer.frameStart
@@ -449,25 +455,29 @@
             showDialog(currentTime) {
                 let _this = this
                 _this.dialog.forEach(function (obj) {
-                    if (obj.showTime < currentTime && (obj.showTime + 1) > currentTime && obj.showed == 0) {
+                    if (obj.showTime > currentTime && (obj.showTime - 1) < currentTime && obj.showed == 0) {
                         obj.showed = 1
                         if (obj.id == 6) {
                             _this.video.addEventListener('timeupdate', function () {
                                 let currentTime = this.currentTime
-                                if (currentTime > 160 && currentTime < 161) {
-                                    _this.video.pause()
-                                    _this.failedCourse()
+                                if (currentTime > 160.1 && currentTime < 161.1) {
+                                    setTimeout(function () {
+                                        _this.video.pause()
+                                        _this.failedCourse()
+                                    },(161.1-_this.video.currentTime)*1000)
                                 }
 
                             })
                         }
-                        _this.dialogMsg = obj.content
-                        _this.showDialogMsg = true
-                        _this.video.pause()
                         setTimeout(function () {
-                            _this.showDialogMsg = false
-                            _this.video.play()
-                        }, 2000 * obj.content.length)
+                            _this.dialogMsg = obj.content
+                            _this.showDialogMsg = true
+                            _this.video.pause()
+                            setTimeout(function () {
+                                _this.showDialogMsg = false
+                                _this.video.play()
+                            }, 2000 * obj.content.length)
+                        },(obj.showTime-_this.video.currentTime)*1000)
 
                     }
                 })

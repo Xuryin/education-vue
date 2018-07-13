@@ -54,8 +54,8 @@
         methods: {
             hidden(value, key) {
                 this.checkPic = key
-                console.log(key)
-                //bus.$emit('hidden', option);
+                this.dialogVisible = false
+                bus.$emit('islandSelected', this.questionData.answers[key]);
             },
             commit() {
                 //bus.$emit('foodSelected', this.checkList);

@@ -49,7 +49,7 @@
         },
         methods: {
             routerTo(dir) {
-                this.$router.push({name: dir, query: {tab: 1}})
+                this.$router.push({name: dir})
             }
         },
         created() {
@@ -57,6 +57,9 @@
             this.userData.gradeNum > 6 ? this.gradeSrc = '../../static/imgs/index_kc_cz.png' :
                 this.gradeSrc = '../../static/imgs/index_kc_xx.png'
             bus.$emit('sendTitle', this.title)
+        },
+        mounted () {
+            localStorage.removeItem("currentGrade")
         },
         components: {
             vFoot

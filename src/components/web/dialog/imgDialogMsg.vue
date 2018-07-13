@@ -23,7 +23,7 @@
         },
         methods:{
             hidden(option){
-                bus.$emit('hidden',option);
+                bus.$emit('imgSelected',option);
             }
         },
         mounted(){

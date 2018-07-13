@@ -405,7 +405,7 @@
             }
             _this.startCourse()
             bus.$emit('sendTitle', _this.title)
-            bus.$on('hidden', function (option) {
+            bus.$on('imgSelected', function (option) {
                 _this.showImgDialogMsg=false
                 switch (option){
                     case 'C':
@@ -428,6 +428,16 @@
                         break
                 }
                 _this.video.play()
+            })
+            bus.$on('hidden', function (action) {
+                console.log(action)
+                if (action == 'reload') {
+                    _this.reload()
+                }
+                if (action == 'next') {
+                    _this.$router.push({name: 'video', query: {courseId: _this.nextCourseId}})
+                    _this.reload()
+                }
             })
             bus.$on('foodSelected', function (list) {
                 _this.showFoodDialogMsg=false

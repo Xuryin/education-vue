@@ -150,8 +150,19 @@
             _this.video = document.getElementById('vid')
             _this.video.onended = function () {
                 //todo 弹出调查问卷  弹出反馈  //根据性别不同显示不同问题 及反馈
-                _this.endCourse()
+                _this.$router.push({name: 'testPage',})
+                //_this.endCourse()
             }
+            bus.$on('hidden', function (action) {
+                console.log(action)
+                if (action == 'reload') {
+                    _this.reload()
+                }
+                if (action == 'next') {
+                    _this.$router.push({name: 'seventy', query: {courseId: 70}})
+                    _this.reload()
+                }
+            })
             _this.startCourse()
             bus.$emit('sendTitle', _this.title)
         },

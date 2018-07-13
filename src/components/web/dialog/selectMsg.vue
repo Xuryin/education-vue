@@ -4,7 +4,11 @@
         <div class="content_border">
             <div class="content-pinyin" v-if="msg.gradeNum < 4">
            <span v-for="(value, key) in msg.feedbackPinyin" :key="key">
-                        <ruby><rb>{{value.w}}</rb><rt>{{value.p}}</rt> </ruby>
+                        <ruby>
+                            <rt>{{value.p}}</rt>
+                            <rb>{{value.w}}</rb>
+
+                        </ruby>
                     </span>
             </div>
 
@@ -92,16 +96,19 @@
         line-height: 3rem;
 
         ruby {
+            display: inline-block;
+            min-width: 2.5rem;
         }
-
         rb {
-            letter-spacing: 0.8rem;
+            text-align: center;
+            display: inline-block;
+            min-width: 2.5rem;
         }
-
         rt {
             font-family: pinyinok;
-            height: 1.5rem;
-            padding-top: 0.2rem;
+            max-height: 1.2rem;
+            height: 1.2rem;
+            text-align: center;
         }
     }
 </style>

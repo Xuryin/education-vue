@@ -14,7 +14,7 @@ export default {
     @import "../static/css/index.css";
     @import "../static/css/animate.css";
 #app {
-  font-family: "Microsoft YaHei","微软雅黑";
+  //font-family: "Microsoft YaHei","微软雅黑";
     height: 100%;
 }
 </style>

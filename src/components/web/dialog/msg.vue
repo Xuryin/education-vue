@@ -19,8 +19,8 @@
             <span class="content-title-pinyin">
                     <span v-for="(value, key) in questionData.contentPinyin" :key="key">
                         <ruby>
-                            <rb>{{value.w}}</rb>
                             <rt>{{value.p}}</rt>
+                            <rb>{{value.w}}</rb>
                         </ruby>
                     </span>
                </span>
@@ -141,7 +141,21 @@
         text-align: left;
         span {
             padding: 0 0.2rem;
-            letter-spacing: 0.1rem;
+        }
+        ruby {
+            display: inline-block;
+            min-width: 2rem;
+        }
+        rb {
+            text-align: center;
+            display: inline-block;
+            min-width: 2rem;
+        }
+        rt {
+            font-family: pinyinok;
+            max-height: 1.2rem;
+            height: 1.2rem;
+            text-align: center;
         }
     }
 
@@ -157,17 +171,25 @@
         background-image: linear-gradient(to right, rgb(29, 113, 242) 0%, rgb(26, 199, 251) 100%);
         display: flex;
         flex-wrap: wrap;
-        letter-spacing: 0.15rem;
         white-space: nowrap;
         word-wrap: break-word;
         span {
             display: inline-block;
-            padding: 0 0.2rem;
+        }
+        ruby {
+            display: inline-block;
+            min-width: 2.5rem;
+        }
+        rb {
+            text-align: center;
+            display: inline-block;
+            min-width: 2.5rem;
         }
         rt {
             font-family: pinyinok;
             max-height: 1.2rem;
             height: 1.2rem;
+            text-align: center;
         }
     }
 

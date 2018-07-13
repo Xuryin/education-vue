@@ -52,7 +52,7 @@
                 orderNum: 0,
                 videoGrade: '',
                 videoStatus: false,
-                showTitle: false
+                showTitle: false,
             }
         },
         computed: {
@@ -144,9 +144,7 @@
                             answerId: obj.split('-')[0]
                         })
                     })
-                    setTimeout(function () {
-                        _this.video.play()
-                    }, 3000)
+                    _this.video.play()
                 }
             },
             natural(answer,question){
@@ -174,11 +172,9 @@
                         }
                     })
                 }
-                setTimeout(function () {
-                    if (question.questionId !== 87&&question.questionId!==91){
-                        _this.video.play()
-                    }
-                }, answer.feedbackDuration)
+                if (question.questionId !== 87&&question.questionId!==91){
+                    _this.video.play()
+                }
             },
             startCourse() { //开始学习课程
                 let url = '/course/start';
@@ -226,6 +222,16 @@
             _this.video.onended = function () {
                 _this.endCourse()
             }
+            bus.$on('hidden', function (action) {
+                console.log(action)
+                if (action == 'reload') {
+                    _this.reload()
+                }
+                if (action == 'next') {
+                    _this.$router.push({name: 'thirtytwo', query: {courseId: 32}})
+                    _this.reload()
+                }
+            })
             _this.startCourse()
             bus.$emit('sendTitle', _this.title)
         },

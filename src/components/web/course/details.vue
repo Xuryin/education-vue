@@ -119,6 +119,12 @@
                     this.$router.push({name: 'thirtytwo', query: {courseId: courseId}})
                 } else if (courseId === 75) {
                     this.$router.push({name: 'seventyfive', query: {courseId: courseId}})
+                } else if (courseId === 68) {
+                    this.$router.push({name: 'sixtyeight', query: {courseId: courseId}})
+                } else if (courseId === 69) {
+                    this.$router.push({name: 'sixtynine', query: {courseId: courseId}})
+                } else if (courseId === 70) {
+                    this.$router.push({name: 'seventy', query: {courseId: courseId}})
                 } else {
                     this.$router.push({name: 'video', query: {courseId: courseId}})
                 }
@@ -132,12 +138,16 @@
                 _this.getInfo()
             })
             let p = {}
-            if (tab != 1) {
+            let grade = getItem('currentGrade')
+            console.log(grade)
+                // 不是初次登陆
+            if (grade) {
+                console.log(111)
                 p.studentId = this.userData.studentId;
-                p.gradeNum = getItem('currentGrade')
+                p.gradeNum = grade
                 this.gradeChecked = getItem('currentGrade')
-
             } else {
+                console.log(222)
                 p.studentId = this.userData.studentId;
             }
             this.courseList(p)

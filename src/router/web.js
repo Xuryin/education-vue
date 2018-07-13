@@ -99,6 +99,42 @@ let router = [
                     keepAlive: false
                 }
             },
+            {
+                path: '/sixtyeight',
+                component: resolve =>
+                    require(["@/components/web/special/sixtyeight"], resolve),
+                name: 'sixtyeight',
+                meta: {
+                    keepAlive: false
+                }
+            },
+            {
+                path: '/sixtynine',
+                component: resolve =>
+                    require(["@/components/web/special/sixtynine"], resolve),
+                name: 'sixtynine',
+                meta: {
+                    keepAlive: true
+                }
+            },
+            {
+                path: '/seventy',
+                component: resolve =>
+                    require(["@/components/web/special/seventy"], resolve),
+                name: 'seventy',
+                meta: {
+                    keepAlive: true
+                }
+            },
+            {
+                path: '/testPage',
+                component: resolve =>
+                    require(["@/components/web/special/testPage"], resolve),
+                name: 'testPage',
+                meta: {
+                    keepAlive: false
+                }
+            },
         ]
     }
 ]

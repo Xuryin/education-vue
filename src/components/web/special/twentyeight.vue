@@ -351,30 +351,28 @@
                     answer.feedbackDuration = 3000
                 }
                 let _this = this
-                setTimeout(function () {
-                    if (answer.crux == 0 && question.crux == 1) {
-                        if (_this.errorCount < 3) {
-                            _this.errorCount++
-                            _this.openDialog(question)
-                        } else {
-                            //视频播放结束，弹出游戏失败等信息
-                            _this.answers.push({
-                                questionId: question.questionId,
-                                option: answer.answerOption,
-                                answerId: answer.answerId
-                            })
-                            this.questions.forEach(function (obj) {
-                                if (obj.questionId == question.questionId) {
-                                    obj.isShow = false
-                                }
-                            })
-                            _this.failedCourse()
-                        }
+                if (answer.crux == 0 && question.crux == 1) {
+                    if (_this.errorCount < 3) {
+                        _this.errorCount++
+                        _this.openDialog(question)
                     } else {
-                        _this.video.currentTime = _this.video.currentTime
-                        _this.video.play()
+                        //视频播放结束，弹出游戏失败等信息
+                        _this.answers.push({
+                            questionId: question.questionId,
+                            option: answer.answerOption,
+                            answerId: answer.answerId
+                        })
+                        this.questions.forEach(function (obj) {
+                            if (obj.questionId == question.questionId) {
+                                obj.isShow = false
+                            }
+                        })
+                        _this.failedCourse()
                     }
-                }, answer.feedbackDuration)
+                } else {
+                    _this.video.currentTime = _this.video.currentTime
+                    _this.video.play()
+                }
             },
             feedBackAndJump(answer, question, videoGrade) {
                 if (answer.feedbackDuration == null || answer.feedbackDuration == '' || answer.feedbackDuration == undefined) {
@@ -400,8 +398,12 @@
                                 })
                             }, 2000)
                             _this.video.addEventListener('timeupdate', function () {
-                                if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
-                                    if (question.isShow === true) _this.openDialog(question)
+                                if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                                    if (question.isShow === true){
+                                        setTimeout(function () {
+                                            _this.openDialog(question)
+                                        },(answer.frameEnd-_this.video.currentTime)*1000)
+                                    }
                                 }
                             })
                             _this.video.currentTime = answer.frameStart
@@ -429,11 +431,13 @@
                             }
                         })
                         _this.video.addEventListener('timeupdate', function () {
-                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-                                if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
-                                    answer.frameNext += 1
-                                }
-                                _this.video.currentTime = answer.frameNext
+                            if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                                // if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                                //     answer.frameNext += 1
+                                // }
+                                setTimeout(function () {
+                                    _this.video.currentTime = answer.frameNext
+                                },(answer.frameEnd-_this.video.currentTime)*1000)
                             }
                         })
                         _this.video.currentTime = answer.frameStart
@@ -458,11 +462,14 @@
                     if (_this.errorCount < 3) {
                         _this.errorCount++
                         _this.video.addEventListener('timeupdate', function () {
-                            if (_this.video.currentTime > answer.frameEnd && (_this.video.currentTime < answer.frameEnd + 1)) {
-                                if (question.isShow===true) _this.openDialog(question)
+                            if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                                if (question.isShow === true){
+                                    setTimeout(function () {
+                                        _this.openDialog(question)
+                                    },(answer.frameEnd-_this.video.currentTime)*1000)
+                                }
                             }
                         })
-                        console.log(answer.frameStart)
                         _this.video.currentTime = answer.frameStart
                         _this.video.play()
                     } else {
@@ -488,11 +495,13 @@
                         }
                     })
                     _this.video.addEventListener('timeupdate', function () {
-                        if (_this.video.currentTime > answer.frameEnd && _this.video.currentTime < (answer.frameEnd + 1)) {
-                            if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
-                                answer.frameNext += 1
-                            }
-                            _this.video.currentTime = answer.frameNext
+                        if (_this.video.currentTime < answer.frameEnd && _this.video.currentTime > (answer.frameEnd - 1)) {
+                            // if (Math.floor(answer.frameNext) == Math.floor(_this.video.currentTime)) {
+                            //     answer.frameNext += 1
+                            // }
+                            setTimeout(function () {
+                                _this.video.currentTime = answer.frameNext
+                            },(answer.frameEnd-_this.video.currentTime)*1000)
                         }
                     })
                     _this.video.currentTime = answer.frameStart
@@ -542,7 +551,7 @@
                 p.result = 1
                 _this.$httpWeb.fetch(url, p)
                     .then(res => {
-                        //console.log('ok', res)
+                        console.log('ok', res)
                         _this.showfinishedMsg = true
                         _this.finishedMsg = res.data
                         _this.finishedMsg.success = true
@@ -564,6 +573,9 @@
                     });
                 } else {
                     // todo 赋值答案
+                    this.answers.extend = an
+                    this.mulQuestionShow = false
+                    this.endCourse()
                 }
             }
         },
@@ -572,16 +584,10 @@
             _this.video = document.getElementById('vid')
             _this.video.ontimeupdate = function () {
                 let currentTime = this.currentTime
-                //todo 151-152秒时  监听问卷弹框
-                // if (currentTime > 151 && currentTime < 152) {
-                //     _this.mulQuestionShow = true
-                //     _this.video.pause()
-                // }
                 _this.showQuestion(currentTime)
             }
             _this.video.onended = function () {
                 _this.mulQuestionShow = true
-                _this.endCourse()
             }
             _this.startCourse()
             bus.$emit('sendTitle', _this.title)
@@ -591,7 +597,7 @@
                     _this.reload()
                 }
                 if (action == 'next') {
-                    _this.$router.push({name: 'video', query: {courseId: _this.nextCourseId}})
+                    _this.$router.push({name: 'twentynine', query: {courseId: 29}})
                     _this.reload()
                 }
             })

@@ -92,6 +92,7 @@
                 this.$router.push('/login')
                 setItem('studentInfo', '')
                 setItem('studentToken', '')
+                localStorage.removeItem("currentGrade")
             }
         },
         mounted() {
