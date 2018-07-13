@@ -152,12 +152,15 @@
                 })
             },
             openDialog(question) {
-                this.video.pause()
                 let obj = {
                     question: question,
                     videoGrade: this.videoGrade
                 }
-                bus.$emit('openDialog', obj)
+                let _this = this
+                setTimeout(function () {
+                    _this.video.pause()
+                    bus.$emit('openDialog', obj)
+                },(question.showTime-_this.video.currentTime)*1000)
             },
             closeDialog(answer, question) {
                 this.questions.forEach(function (obj) {

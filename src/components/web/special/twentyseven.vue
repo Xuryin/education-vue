@@ -432,7 +432,6 @@
                             _this.showDialogMsg = false
                             _this.video.play()
                         }, 2000 * obj.content.length)
-
                     }
                 })
             },

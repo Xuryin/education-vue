@@ -111,16 +111,19 @@
                 })
             },
             openDialog(question) {
-                this.video.pause()
                 let obj = {
                     question: question,
                     videoGrade: this.videoGrade
                 }
-                if (question.questionId!=92){
-                    bus.$emit('openDialog', obj)
-                } else {
-                    bus.$emit('specialDialog',obj)
-                }
+                let _this = this
+                setTimeout(function () {
+                    _this.video.pause()
+                    if (question.questionId!=92){
+                        bus.$emit('openDialog', obj)
+                    } else {
+                        bus.$emit('specialDialog',obj)
+                    }
+                },(question.showTime-_this.video.currentTime)*1000)
 
             },
             closeDialog(answer, question,checkList=[]) {

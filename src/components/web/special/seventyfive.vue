@@ -114,16 +114,19 @@
                 })
             },
             openDialog(question) {
-                this.video.pause()
                 let obj = {
                     question: question,
                     videoGrade: this.videoGrade
                 }
-                if (question.questionId==223){
-                    bus.$emit('openIslandDialog', obj)
-                } else {
-                    bus.$emit('openDialog', obj)
-                }
+                let _this = this
+                setTimeout(function () {
+                    _this.video.pause()
+                    if (question.questionId==223){
+                        bus.$emit('openIslandDialog', obj)
+                    } else {
+                        bus.$emit('openDialog', obj)
+                    }
+                },(question.showTime-_this.video.currentTime)*1000)
             },
             closeDialog(answer, question) {
                 if (question.questionId==147){
