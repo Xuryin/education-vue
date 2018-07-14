@@ -7,7 +7,7 @@
         <div class="video_content">
             <video id="vid" crossorigin="*" :src="sourceSrc" autoplay
                    width="64%"
-                   @click="togglePlay">
+                   @click="togglePlay" :poster="poster">
             </video>
             <img src="~static/imgs/play.png" alt="播放" v-if="videoStatus" class="video_status" @click="togglePlay">
         </div>
@@ -75,7 +75,8 @@
                 orderNum: 0,
                 videoGrade: '',
                 videoStatus: false,
-                showTitle: false
+                showTitle: false,
+                poster: ''
             }
         },
         computed: {},
@@ -105,6 +106,7 @@
                 p.courseId = this.courseId;
                 this.$httpWeb.fetch(url, p)
                     .then(res => {
+                        this.poster = this.$myUrl.baseUrl()+res.data.poster
                         this.questions = res.data.questions
                         this.questions.forEach(function (obj) {
                             obj.isShow = true

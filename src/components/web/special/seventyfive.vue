@@ -86,8 +86,7 @@
                 p.courseId = this.courseId;
                 this.$httpWeb.fetch(url, p)
                     .then(res => {
-                        //this.poster = this.$myUrl.baseUrl()+res.data.poster
-                        //console.log(this.poster)
+                        this.poster = this.$myUrl.baseUrl()+res.data.poster
                         this.questions = res.data.questions
                         this.questions.forEach(function (obj) {
                             obj.isShow = true

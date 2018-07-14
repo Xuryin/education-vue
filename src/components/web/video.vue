@@ -83,12 +83,10 @@
                 this.$httpWeb.fetch(url, p)
                     .then(res => {
                         this.poster = this.$myUrl.baseUrl()+res.data.poster
-                        console.log(this.poster)
                         this.questions = res.data.questions
                         this.questions.forEach(function (obj) {
                             obj.isShow = true
                         })
-                        console.log(res.data)
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
