@@ -84,10 +84,10 @@
     }
 
     .shadow {
-        height: calc(98% - 10rem);
-        margin-top: 10rem;
-        margin-left: 18%;
-        width: 64%;
+        height: calc(100% - 6rem);
+        width: 100%;
+        min-width: 1280px;
+        margin-top: 6rem;
         opacity: 0.2;
         background-color: #333333;
         position: absolute;
