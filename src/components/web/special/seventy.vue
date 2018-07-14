@@ -52,7 +52,9 @@
                 orderNum: 0,
                 videoGrade: '',
                 videoStatus: false,
-                showTitle: false
+                showTitle: false,
+                dialog:true,
+                extend:''
             }
         },
         computed: {
@@ -83,11 +85,15 @@
                 p.courseId = this.courseId;
                 this.$httpWeb.fetch(url,p)
                     .then(res=>{
+                        console.log(res.data)
                         this.videoTitle = res.data.title
                         this.videoGrade = res.data.gradeNum
                         this.orderNum = res.data.orderNum
                         this.showTitle = true
                         this.sourceSrc = this.$myUrl.baseUrl() + res.data.video
+                        if (this.$route.query.complete != undefined) {
+                            this.sourceSrc = ''
+                        }
                         this.nextCourseId = res.data.nextCourseId
                     })
                     .catch(err=>{
@@ -133,6 +139,7 @@
                 p.recordId = _this.recordId;
                 p.options = JSON.stringify(options)
                 p.result = 1
+                p.extend = _this.extend
                 _this.$httpWeb.fetch(url, p)
                     .then(res => {
                         _this.showfinishedMsg = true
@@ -147,10 +154,26 @@
         },
         mounted() {
             let _this = this
+            let complete = _this.$route.query.complete
             _this.video = document.getElementById('vid')
+            if (complete ==1) {
+                _this.recordId = _this.$route.query.recordId
+                _this.extend = localStorage.getItem('answerList')
+                _this.endCourse()
+            }
+            _this.video.ontimeupdate = function(){
+                if (_this.video.currentTime>303&&_this.video.currentTime<304){
+                    setTimeout(function () {
+                        _this.video.pause()
+                        if (_this.dialog) {
+                            _this.dialog = false
+                            _this.$router.push({name: 'testPage',query: {courseId:  70,recordId:_this.recordId}})
+                        }
+                    },(304-_this.video.currentTime)*1000)
+                }
+            }
             _this.video.onended = function () {
                 //todo 弹出调查问卷  弹出反馈  //根据性别不同显示不同问题 及反馈
-                _this.$router.push({name: 'testPage',})
                 //_this.endCourse()
             }
             bus.$on('hidden', function (action) {

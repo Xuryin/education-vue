@@ -35,7 +35,7 @@
         </div>
         <v-selectmsg :msg="msg" v-if="showMsg"></v-selectmsg>
 
-        <v-finished :finishedMsg="finishedMsg" v-if="showfinishedMsg" @closeDialog="closeDialog"></v-finished>
+        <v-finished :finishedMsg="finishedMsg" v-if="showfinishedMsg"></v-finished>
     </div>
 </template>
 

@@ -253,7 +253,9 @@
                 questionData: [],
                 gender: '',
                 finished: false,
-                grade: 0
+                grade: 0,
+                courseId:'',
+                recordId:''
             }
         },
         methods: {
@@ -278,38 +280,65 @@
             },
             confirmAnswer() {
                 let _this = this
-                console.log(this.questionData)
+                let answerList = []
                 for (let i = 0; i < 33; i++) {
+                    let p={}
                     // todo 要验证是否都为0-3的数字
                     if (_this.questionData[i].answer=='') {
                         this.$alert('第'+(i+1)+'题没有填写答案，请仔细检查', {
                             confirmButtonText: '确定',
                             center:true,
                             callback: action => {
+                                console.log(action)
                             }
                         })
+                        return
                     }else {
-                        //todo 提交分数到后台，判断分数对应的评价
-                        if (0<=_this.grade&&_this.grade<24){
-
-                        } else if (25<=_this.grade&&_this.grade<49){
-
-                        }else if (50<=_this.grade&&_this.grade<74){
-
-                        }else if (75<=_this.grade&&_this.grade<100){
-
-                        }
+                        let q = i+1
+                        p[q] =  _this.questionData[i].answer
+                        answerList.push(p)
+                        _this.grade += parseInt(_this.questionData[i].answer)
                     }
                 }
-                console.log(this.grade)
+                // if (0<=_this.grade&&_this.grade<24){
+                //     this.$alert('第'+(i+1)+'题没有填写答案，请仔细检查', {
+                //         confirmButtonText: '返回视频',
+                //         center:true,
+                //         callback: action => {
+                //             console.log(action)
+                //         }
+                //     })
+                // } else if (25<=_this.grade&&_this.grade<49){
+                //
+                // }else if (50<=_this.grade&&_this.grade<74){
+                //
+                // }else if (75<=_this.grade&&_this.grade<100){
+                //
+                // }
+                _this.finished = true
+                //console.log(this.grade)
+                localStorage.setItem('answerList',JSON.stringify(answerList))
+                console.log(answerList)
+                //todo 提交分数到后台
             },
             toVideo () {
                 // 跳转
+                let name='sixtynine'
+                if (this.courseId==70){
+                    name = 'seventy'
+                }
+                this.$router.push({name: name, query: {courseId: this.courseId,complete:1,recordId:this.recordId}})
             }
-        }
-        ,
+        },
+        beforeRouteLeave(to, from, next) {
+            // 设置下一个路由的 meta
+            to.meta.keepAlive = true;  // B 跳转到 A 时，让 A 缓存，即不刷新
+            next();
+        },
         mounted() {
             this.getInfo()
+            this.courseId = this.$route.query.courseId
+            this.recordId = this.$route.query.recordId
         }
     }
 </script>

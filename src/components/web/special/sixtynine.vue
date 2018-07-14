@@ -150,7 +150,7 @@
             _this.video = document.getElementById('vid')
             _this.video.onended = function () {
                 //todo 弹出调查问卷  弹出反馈  //根据性别不同显示不同问题 及反馈
-                _this.$router.push({name: 'testPage',})
+                _this.$router.push({name: 'testPage',query: {courseId:  69}})
                 //_this.endCourse()
             }
             bus.$on('hidden', function (action) {
@@ -159,7 +159,7 @@
                     _this.reload()
                 }
                 if (action == 'next') {
-                    _this.$router.push({name: 'seventy', query: {courseId: 70}})
+                    _this.$router.push({name: 'seventy', query: {courseId:  _this.nextCourseId}})
                     _this.reload()
                 }
             })
@@ -172,6 +172,11 @@
             this.videoWidth = wid * 0.75
             this.videoHeight = hei - 200
 
+        },
+        activated () {
+            if (!this.$router.query.complete) {
+                this.reload()
+            }
         },
         components: {
             vMsg, vSelectmsg,vFinished,vMulMsg

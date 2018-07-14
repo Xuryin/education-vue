@@ -114,7 +114,7 @@ let router = [
                     require(["@/components/web/special/sixtynine"], resolve),
                 name: 'sixtynine',
                 meta: {
-                    keepAlive: true
+                    keepAlive: false
                 }
             },
             {
@@ -123,7 +123,7 @@ let router = [
                     require(["@/components/web/special/seventy"], resolve),
                 name: 'seventy',
                 meta: {
-                    keepAlive: true
+                    keepAlive: false
                 }
             },
             {
